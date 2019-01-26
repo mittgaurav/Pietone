@@ -3,8 +3,7 @@
 Created on Sun Oct  7 23:11:31 2018
 
 @author: gaurav
-"""
-"""
+
 if current coin is too
 high val, go to lesser
 denomination for final

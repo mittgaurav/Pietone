@@ -3,8 +3,7 @@
 Created on Wed Oct  3 18:16:12 2018
 
 @author: gaurav
-"""
-"""
+
 current + prev less weight
 vs.
 no curr + prev same weight
@@ -35,11 +34,8 @@ def knapsack(arrW, arrV, total):
         return 0
 
     # set 0 index
-    for i in range(0, len(arrW) + 1):
-        matrix.insert(i, list())
-        matrix[i].insert(0, 0)
-    for j in range(0, total + 1):
-        matrix[0].insert(j, 0)
+    matrix = [[0 for _ in range(total+1)] for _ in
+              range(len(arrW)+1)]
 
     for i in range(1, len(arrW) + 1):
         for j in range(1, total+1):
