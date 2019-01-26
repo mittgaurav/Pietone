@@ -27,7 +27,7 @@ def minimize_pair_dist(aI):
     sum of lengths."""
 
     mindist = 100000
-    for x in (pairs(aI)):
+    for x in pairs(aI):
         dist = 0
         for i in x:
             dist += abs(i[0] - i[1])

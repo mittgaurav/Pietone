@@ -31,18 +31,18 @@ def two_partition(arr):
             arr[i] = arr[H]
             arr[H] = tempor
             H -= 1
-    tempor = arr[0]
+    # put pivot in its place (H)
     arr[0] = arr[H]
-    arr[H] = tempor
-    return arr, H
+    arr[H] = pivot
+    return H
 
 
 def quicksort(arr):
     """sort given array"""
-    if 0 == len(arr) or 1 == len(arr):
+    if len(arr) == 0 or len(arr) == 1:
         return arr
 
-    arr, p = two_partition(arr)
+    p = two_partition(arr)
     return quicksort(arr[:p]) + [arr[p]] + quicksort(arr[p+1:])
 
 

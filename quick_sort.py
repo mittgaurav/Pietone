@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 quick sort
+
 @author: gaurav
 """
 
@@ -54,15 +55,15 @@ def partition(arr):
         else:  # arr[i] == pivot:
             i += 1
 
-    return arr, L, H+1
+    return L, H+1
 
 
 def quicksort(arr):
     """sort given array"""
-    if 0 == len(arr) or 1 == len(arr):
+    if len(arr) == 0 or len(arr) == 1:
         return arr
 
-    arr, l, h = partition(arr)
+    l, h = partition(arr)
 
     return quicksort(arr[:l]) + arr[l:h] + quicksort(arr[h:])
 

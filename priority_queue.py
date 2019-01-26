@@ -2,96 +2,187 @@
 """
 Created on Thu Sep 13 21:00:54 2018
 
+Priority Queue
+Maxheap: max num at root.
+
 @author: gaurav
 """
 
 
-class priority_queue:
+class Heap:
     """heap based data stuct
     that stores values as by
     a certain 'priority'"""
-    index = -1
-    vals = []
+    @classmethod
+    def order(cls, arr, parent, child):
+        """parent >= child in max heap
+        parent <= child in min heap"""
+        pass
 
-    def add(this, num):
+    def __init__(self):
+        self.vals = []
+
+    def add(self, num):
         """add to end and
         propogate up"""
-        this.index += 1
-        this.vals.append(num)
+        self.vals.append(num)
 
-        this._propogati()
-        return this
+        self.swim_up(len(self) - 1)
+        return self
 
-    def _swap(this, i, j):
-        temp = this.vals[i]
-        this.vals[i] = this.vals[j]
-        this.vals[j] = temp
+    insert = add
 
-    def __str__(this):
-        return str(this.vals)
+    def _swap(self, i, j):
+        """swap"""
+        temp = self.vals[i]
+        self.vals[i] = self.vals[j]
+        self.vals[j] = temp
 
-    def _propogati(this):
+    def __str__(self):
+        return str(self.vals)
+
+    __repr__ = __str__
+
+    def __len__(self):
+        return len(self.vals)
+
+    def swim_up(self, i):
         """move number added
-        at end higher"""
-        i = this.index
-        while(i > 0):
-            if i % 2 == 0:
-                j = int((i - 2)/2)
-            else:
-                j = int((i - 1)/2)
+        at end higher to its
+        rightful place"""
+        if i <= 0:
+            return
 
-            if this.vals[j] < this.vals[i]:
-                this._swap(i, j)
-                i = j
-            else:
-                return
+        par = int((i - 1)/2)  # parent
+        if self.order(self.vals, par, i):
+            return  # has heap property
 
-    def _heapify(this, i):
+        # Swap as parent less than elem
+        self._swap(i, par)
+        self.swim_up(par)
+
+    def _heapify(self, i=0):
         """lowest number on
         top is brought down
         to its right loc"""
-        L = int((2 * i) + 1)
-        r = int((2 * i) + 2)
-        largest = i
-        if L <= this.index and this.vals[L] > this.vals[i]:
-            largest = L
-        if r <= this.index and this.vals[r] > this.vals[largest]:
-            largest = r
-        if largest != i:
-            this._swap(largest, i)
-            this._heapify(largest)
+        if i >= int(len(self)/2):
+            return
 
-    def pop(this):
+        L = (2 * i) + 1
+        r = (2 * i) + 2
+
+        # 3 way comparison to
+        # get the m**imum. We
+        # swap i with m**imum
+        largest = i
+        if L < len(self) and not self.order(self.vals, i, L):
+            largest = L
+        if r < len(self) and not self.order(self.vals, largest, r):
+            largest = r
+        if largest == i:
+            return  # has heap property
+
+        self._swap(largest, i)
+        self._heapify(largest)
+
+    def pop(self):
         """take highest num,
         replace with least,
         and heapify; i.e.
         move it down"""
-        ret = this.vals[0]
+        if not self.vals:
+            return None
+
+        ret = self.vals[0]
 
         # replace with very small
-        this.vals[0] = this.vals[this.index]
+        self.vals[0] = self.vals.pop()
 
-        # bring that very small to end
-        this._heapify(0)
-        this.vals.pop(this.index)
-        this.index -= 1
+        # sink that very small to end
+        self._heapify()
         return ret
 
+    def peek(self):
+        """view root"""
+        return self.vals[0] if self.vals else None
 
-a = priority_queue()
-print(a)
-print("add 4,", a.add(4))
-print("add 5,", a.add(5))
-print("add 3,", a.add(3))
-a.pop()
-print("pop 5,", a)
-print("add 31,", a.add(31))
-print("add -3,", a.add(-3))
-a.pop()
-print("pop 31,", a)
-a.pop()
-print("pop 4,", a)
-print("add 23,", a.add(23))
-print("add 16,", a.add(16))
-a.pop()
-print("pop 23,", a)
+    @classmethod
+    def check(cls, arr, start=0):
+        """is arr an intended heap?"""
+        if len(arr) <= 1:
+            return True
+
+        if start >= int(len(arr)/2):
+            return True
+
+        L = (2 * start) + 1
+        r = (2 * start) + 2
+
+        if L < len(arr) and not cls.order(arr, start, L):
+            return False
+        if r < len(arr) and not cls.order(arr, start, r):
+            return False
+
+        return cls.check(arr, L) and cls.check(arr, r)
+
+
+class MaxHeap(Heap):
+    """heap based data stuct
+    that stores values as by
+    a maximum 'priority'"""
+    @classmethod
+    def order(cls, arr, parent, child):
+        """parent >= child in max heap"""
+        return arr[parent] >= arr[child]
+
+
+class MinHeap(Heap):
+    """Minimum at root"""
+    @classmethod
+    def order(cls, arr, parent, child):
+        """parent <= child in min heap"""
+        return arr[parent] <= arr[child]
+
+
+if __name__ == "__main__":
+    print(MaxHeap.check([8, 6, 6, 0, 2, 3, 1, 1]))
+    print(MaxHeap.check([8, 6, 6, 0, 2, 3, 1, 0]))
+    a = MaxHeap()
+    print(a)
+    print("add 4,", a.add(4))
+    print("add 5,", a.add(5))
+    print("add 3,", a.add(3))
+    print(MaxHeap.check(a.vals))
+    a.pop()
+    print("pop 5,", a)
+    print("add 7,", a.add(7))
+    print("add 0,", a.add(0))
+    print(MaxHeap.check(a.vals))
+    a.pop()
+    print("pop 7,", a)
+    a.pop()
+    print("pop 4,", a)
+    print("add 8,", a.add(8))
+    print("add 6,", a.add(6))
+    print("add 2,", a.add(2))
+    print("add 6,", a.add(6))
+    print("add 1,", a.add(1))
+    print("add 1,", a.add(1))
+    print(a.peek())
+    print(a)
+    print(MaxHeap.check(a.vals))
+    a.pop()
+    print("pop 8,", a)
+    a.pop()
+    print("pop 6,", a)
+    print(MaxHeap.check(a.vals))
+    b = MinHeap()
+    print("add 4,", b.add(4))
+    print("add 5,", b.add(5))
+    print("add 3,", b.add(3))
+    print(b.peek())
+    print(b)
+    b.pop()
+    print("pop 3,", b)
+    print(MinHeap.check(b.vals))
+    print(MinHeap.check(a.vals))

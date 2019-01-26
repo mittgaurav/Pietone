@@ -30,13 +30,14 @@ def merge(arr, brr):
 
 def mergesort(arr):
     """merge sort"""
-    if 0 == len(arr) or 1 == len(arr):
+    if len(arr) == 0 or len(arr) == 1:
         return arr
 
     # divide array in two and recursively sort
     # them both. Then, merge the sorted arrays.
     return merge(mergesort(arr[:int(len(arr)/2)]),
                  mergesort(arr[int(len(arr)/2):]))
+
 
 print(mergesort([]))
 print(mergesort([0, 10, 2, 23, 5, -8, 1, 12]))
