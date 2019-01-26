@@ -3,8 +3,7 @@
 Created on Sat Oct  6 14:46:09 2018
 
 @author: gaurav
-"""
-"""
+
 match - delete both chars
 and go to smaller matrix.
 
@@ -13,7 +12,7 @@ to remove char from A and match with B
 or remove char from B and match with A
 
 Different from Levenshtein
-distances. That has option
+distances; that has option
 to substitute current char
 i.e. lose on val but check
 after delete both char for
@@ -29,7 +28,6 @@ b [0, 1, 2, 2, 3, 3, 3]
 b [0, 1, 2, 2, 3, 3, 3]
 a [0, 1, 2, 3, 3, 4, 4]
 """
-
 matrix = list()
 
 
@@ -40,32 +38,26 @@ def longest_common_subsequence(arr, brr):
 
     # fill zero column and row
     for i in range(0, len(arr) + 1):
-        matrix.insert(i, list())
-        matrix[i].insert(0, 0)
-    for j in range(1, len(brr) + 1):
-        matrix[0].insert(j, 0)
+        matrix.append(list())
+        for j in range(0, len(brr) + 1):
+            matrix[i].append(0)
 
-    i = 1
-    for a in arr:
-        j = 1
-        for b in brr:
-            if a == b:
+    for i in range(0, len(arr)):
+        for j in range(0, len(brr)):
+            if arr[i] == brr[j]:
                 # both elements are same, so
                 # we take this and add to so
                 # far accumulated max in n-1
                 # matrix, matrix[i-1][j-1]
-                acc = 1 + matrix[i-1][j-1]
+                matrix[i+1][j+1] = 1 + matrix[i][j]
             else:
                 # no match so no improvement
                 # hence we take max of value
                 # from smaller matrices till
                 # this column and row.
-                acc = max(matrix[i-1][j], matrix[i][j-1])
-            matrix[i].insert(j, acc)
-            j += 1
-        i += 1
+                matrix[i+1][j+1] = max(matrix[i][j+1], matrix[i+1][j])
 
-    return matrix[len(arr)][len(brr)]
+    return matrix[i+1][j+1]
 
 
 def find_paths(arr, brr, matrix, i, j):
@@ -114,3 +106,18 @@ brr = "cbabac"
 print(longest_common_subsequence(arr, brr))
 print(find_paths(arr, brr, matrix, len(arr), len(brr)))
 print(lcs_no_dp(arr, brr, len(arr), len(brr)))
+
+
+def lcs(arr, brr):
+    # another way of doing
+    # from starting index.
+    if len(arr) == 0 or len(brr) == 0:
+        return 0
+
+    if arr[0] == brr[0]:
+        return 1 + lcs(arr[1:], brr[1:])
+
+    return max(lcs(arr, brr[1:]), lcs(arr[1:], brr))
+
+
+print(lcs(arr, brr))
