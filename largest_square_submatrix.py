@@ -3,8 +3,7 @@
 Created on Tue Oct  9 01:26:49 2018
 
 @author: gaurav
-"""
-"""
+
 [False,         True,        False,        False],
 [True,          True,         True,         True],
 [False,         True,         True,        False],
@@ -83,18 +82,15 @@ def square_submatrix(input):
 
 def square_submatrix_short(input):
     """I don't need to keep so
-    many values. What if I get
-    only the maximum?
+    many values. Instead keep
+    only the maximum.
     Quite similar to finding
     longest True series in an
     array. You maintain local
     size and a global max one
     """
-    for i in range(0, len(input) + 1):
-        matrix.insert(i, list())
-        matrix[i].insert(0, 0)
-    for j in range(0, len(input[0]) + 1):
-        matrix[0].insert(j, 0)
+    matrix = [[0 for _ in range(len(input[0])+1)] for _ in
+              range(len(input) + 1)]
 
     m = 0
     for i in range(1, len(input) + 1):

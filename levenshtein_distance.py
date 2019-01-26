@@ -45,7 +45,7 @@ def levenshtein_dist_no_dp(arr, brr, a, b):
     else:
         # We have lost one count. However, we
         # still not sure that the match is in
-        # fact better as we may win by delete
+        # fact better as we may win if remove
         # this char from one or the other arr
         return(1 + min(
             levenshtein_dist_no_dp(arr, brr, a-1, b),  # remove a
@@ -54,11 +54,11 @@ def levenshtein_dist_no_dp(arr, brr, a, b):
             ))
 
 
-arr = "kitten"
-brr = "sitten"
-print(levenshtein_dist_no_dp(arr, brr, len(arr), len(brr)))
-print(levenshtein_dist(arr, brr))
-arr = "booking"
-brr = "backsin"
-print(levenshtein_dist_no_dp(arr, brr, len(arr), len(brr)))
-print(levenshtein_dist(arr, brr))
+A = "kitten"
+B = "sitten"
+print(levenshtein_dist_no_dp(A, B, len(A), len(B)))
+print(levenshtein_dist(A, B))
+A = "booking"
+B = "backsin"
+print(levenshtein_dist_no_dp(A, B, len(A), len(B)))
+print(levenshtein_dist(A, B))
