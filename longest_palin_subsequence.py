@@ -11,8 +11,6 @@ def longest_palin_seq(arr):
     subsequence"""
     if not arr:
         return 0
-    if len(arr) == 1:
-        return 1
 
     if arr[0] == arr[-1]:
         # The two extremes match,
