@@ -17,8 +17,8 @@ it says an element isn't there, it isn't
 
 Hash function can be improved vastly.
 """
-from bitarray import bitarray
 import random
+from bitarray import bitarray
 
 
 class BloomFilter():
@@ -32,34 +32,42 @@ class BloomFilter():
         self.bits = bitarray(m_bits)
         self.bits.setall(0)
 
+    def hasher(self, num):
+        """hash iterator"""
+        for i in range(self.k):
+            yield (num + i) % self.m
+
     def add(self, num):
         """add num to filter"""
-        for i in range(self.k):
-            self.bits[(num + i) % self.m] = 1
+        for i in self.hasher(num):
+            self.bits[i] = 1
 
     def __contains__(self, num):
-        for i in range(self.k):
-            if self.bits[(num + i) % self.m] == 0:
+        for i in self.hasher(num):
+            if self.bits[i] == 0:
                 return False
         return True
 
 
 if __name__ is "__main__":
-    BF = BloomFilter(10000, 100)
+    N = 10000
+    BF = BloomFilter(N, 100)
     Ns = list()
-    for i in range(100):
-        num = int(random.random() * 10000)
-        BF.add(num)
-        Ns.append(num)
+    for _ in range(100):
+        n = int(random.random() * 10000)
+        BF.add(n)
+        Ns.append(n)
 
     # definitely no false negative
     # if element not there, say so
-    [print("error with", i) for i in Ns if i not in BF]
+    assert not [print("error with", i) for i in Ns if i not in BF]
 
     # false positives are possible
     total = 0
-    for i in range(100):
-        num = int(random.random() * 10000)
-        if num not in Ns and num in BF:
+    for _ in range(N):
+        n = int(random.random() * 10000)
+        if n not in Ns and n in BF:
             total += 1
-            print(total, "warning", num)
+            print(total, "warning", n)
+
+    print("perfection", 100 - (total/N * 100), "percent")

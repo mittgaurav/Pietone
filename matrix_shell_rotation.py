@@ -10,7 +10,7 @@ anti-clockwise
 
 def rotation(matrix, rs, re, cs, ce):
     """for matrix dimensions,
-    returns array of shell"""
+    returns shell as array"""
     arr = []
     if rs > re or cs > ce:
         return arr
@@ -43,7 +43,11 @@ def matrix_rotation(matrix, rot):
         if not arr:
             break
         for i in range(len(arr)):
-            (newr, newc, newval) = arr[(i+rot) % (len(arr))]
+            # we have matrix shell
+            # that needs to rotate
+            # we replace location
+            # that ith goes into.
+            (newr, newc, _) = arr[(i+rot) % (len(arr))]
             matrix[newr][newc] = arr[i][2]
         rs += 1
         re -= 1
@@ -57,10 +61,13 @@ matrix.append(list(range(5, 9)))
 matrix.append(list(range(9, 13)))
 matrix.append(list(range(13, 17)))
 matrix.append(list(range(17, 21)))
-[print(_) for _ in matrix]
+assert [print(_) for _ in matrix]
 matrix_rotation(matrix, 1)
 print("-----")
-[print(_) for _ in matrix]
+assert [print(_) for _ in matrix]
 matrix_rotation(matrix, 3)
 print("-----")
-[print(_) for _ in matrix]
+assert [print(_) for _ in matrix]
+matrix_rotation(matrix, 100)
+print("-----")
+assert [print(_) for _ in matrix]
