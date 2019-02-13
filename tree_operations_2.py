@@ -14,14 +14,14 @@ def deepest_node(tree, depth=0):
     if not tree:
         return None, depth
 
-    l = r = tree
+    L = r = tree
     d_l = d_r = 0
     if tree.left:
-        l, d_l = deepest_node(tree.left, depth)
+        L, d_l = deepest_node(tree.left, depth)
     if tree.right:
         r, d_r = deepest_node(tree.right, depth)
 
-    node, depth = (l, d_l) if d_l >= d_r else (r, d_r)
+    node, depth = (L, d_l) if d_l >= d_r else (r, d_r)
     return node, depth + 1
 
 
@@ -176,6 +176,41 @@ print(link_level_nodes.__name__)
 T = Tree.tree()
 print(T)
 link_level_nodes(T)
+print("===========================")
+# ==================================
+# ==================================
+
+
+def zigzap_level_order(root: 'TreeNode') -> 'List[List[int]]':
+    """left, right, left, right..."""
+    result = []
+    queue = [root]
+    l_to_r = True
+    while queue:
+        L = len(queue)
+        arr = []
+        for i in range(L):
+            # Have to pop either
+            # from left or right
+            node = queue.pop(0 if l_to_r else L - i - 1)
+            arr.append(node.data)
+
+            if not l_to_r and node.left:
+                # if popped from l to r
+                # children are r to l
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+            if l_to_r and node.left:
+                queue.append(node.left)
+        l_to_r = not l_to_r
+        result.append(arr)
+    return result
+
+
+print(zigzap_level_order.__name__)
+print(T)
+print(zigzap_level_order(T))
 print("===========================")
 # ==================================
 # ==================================
