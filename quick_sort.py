@@ -68,10 +68,11 @@ def quicksort(arr):
     return quicksort(arr[:l]) + arr[l:h] + quicksort(arr[h:])
 
 
-print(quicksort([]))
-print(quicksort([3, 2, 1, 4, 2, -6]))
-print(quicksort([0, 10, 2, 23, 5, -8, 1, 12]))
-print(quicksort([0]))
-print(quicksort([0, 0, 0, 0]))
-print(quicksort([-8, 0, 1, 2, 5, 10, 12, 23]))
-print(quicksort([23, 12, 10, 5, 2, 1, 0, -8]))
+if __name__ == "__main__":
+    print(quicksort([]))
+    print(quicksort([3, 2, 1, 4, 2, -6]))
+    print(quicksort([0, 10, 2, 23, 5, -8, 1, 12]))
+    print(quicksort([0]))
+    print(quicksort([0, 0, 0, 0]))
+    print(quicksort([-8, 0, 1, 2, 5, 10, 12, 23]))
+    print(quicksort([23, 12, 10, 5, 2, 1, 0, -8]))

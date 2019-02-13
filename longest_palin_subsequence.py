@@ -6,11 +6,14 @@ Created on Mon Jan 21 00:54:52 2019
 """
 
 
-def longest_palin_seq(arr):
+def longest_palin_seq(arr) -> 'int':
     """longest palindromic
     subsequence"""
     if not arr:
         return 0
+
+    if len(arr) == 1:
+        return 1
 
     if arr[0] == arr[-1]:
         # The two extremes match,
@@ -21,7 +24,7 @@ def longest_palin_seq(arr):
                longest_palin_seq(arr[:-1]))
 
 
-def longest_palin_dp(arr, i, j):
+def longest_palin_dp(arr, i, j) -> 'int':
     """memoization: matrix of
     start and end indices"""
     if i < 0 or j >= len(arr) or i > j:
