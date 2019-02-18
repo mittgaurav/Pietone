@@ -47,3 +47,27 @@ def longest_palin_dp(arr, i, j) -> 'int':
 for A in ["abdbca", "cddpd"]:
     matrix = [[-1 for _ in A] for _ in A]
     print(longest_palin_seq(A), longest_palin_dp(A, 0, len(A)-1))
+print("--------------------")
+
+
+def longest_paren(arr):
+    """parenthesis match longest"""
+    if not arr:
+        return 0
+
+    if len(arr) == 1:
+        return 0
+    if len(arr) == 2:
+        return 2 if arr[0] == '(' and arr[1] == ')' else 0
+
+    if arr[0] == '(' and arr[1] == ')':
+        return 2 + longest_paren(arr[1:-1])
+    elif arr[0] != '(':
+        return longest_paren(arr[1:])
+    elif arr[-1] != ')':
+        return longest_paren(arr[1:])
+
+
+print(longest_paren("()("))
+print(longest_paren("("))
+print(longest_paren(")()())"))
