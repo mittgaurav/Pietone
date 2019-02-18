@@ -44,9 +44,50 @@ def longest_palin_dp(arr, i, j) -> 'int':
     return matrix[i][j]
 
 
+print(longest_palin_seq.__name__)
 for A in ["abdbca", "cddpd"]:
     matrix = [[-1 for _ in A] for _ in A]
     print(longest_palin_seq(A), longest_palin_dp(A, 0, len(A)-1))
+print("--------------------")
+
+
+def l_p_string(arr):
+    """contiguous string
+    that's a palindrome"""
+    if not arr:
+        return (0, True)
+    if len(arr) == 1:
+        return (1, True)
+    if len(arr) == 2:
+        return (2, True) if arr[0] == arr[1] else (0, False)
+
+    # chars don't match,
+    # so check internal.
+    # Is not continuous
+    if arr[0] != arr[-1]:
+        return((max(l_p_string(arr[:-1])[0],
+                    l_p_string(arr[1:])[0]), False))
+
+    val, club = l_p_string(arr[1:-1])
+    if club:  # inside is continuous
+        val += 2
+
+    # now, it may happen that sub-str
+    # has longer match than continuos
+    without = max(l_p_string(arr[1:]), l_p_string(arr[:-1]))
+    if without[0] > val:
+        return without
+
+    return (val, club)
+
+
+print(l_p_string.__name__)
+print(l_p_string("abab"))
+print(l_p_string("babad"))
+print(l_p_string("abbccbba"))
+print(l_p_string("abbccbballabbccbbal"))
+print(l_p_string("abbccbballxabbccbbal"))
+print(l_p_string("rrar"))
 print("--------------------")
 
 
@@ -68,6 +109,7 @@ def longest_paren(arr):
         return longest_paren(arr[1:])
 
 
+print(longest_paren.__name__)
 print(longest_paren("()("))
 print(longest_paren("("))
 print(longest_paren(")()())"))
