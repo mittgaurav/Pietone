@@ -7,7 +7,7 @@ Created on Sun Nov 11 20:22:40 2018
 # NOT CORRECT
 
 
-def longest_incr_subsequence(arr):
+def longest_incr_subseq(arr):
     """longest subsequence (can be
     non-consecutive) such that all
     elems are in increasing order"""
@@ -20,11 +20,18 @@ def longest_incr_subsequence(arr):
     if len(arr) == 0:
         return 0
 
+    if len(arr) == 1:
+        return 1
+
+    val = 0
     for i in range(len(arr)):
+        for j in range(i):
+            if arr[i] >= arr[j]:
+                val = max(1+longest_incr_subseq(arr[:j+1]), val)
+
+    return val
 
 
-
-# print(longest_increasing_subsequence([2, 3, 1], 1))
-print(longest_incr_subsequence([2, 3, 1, 6, 9, 5]))
-print(longest_incr_subsequence([2, 3, 1, 6]))
-print(longest_incr_subsequence([10, 22, 9, 33, 21, 50, 41, 60, 80]))
+print(longest_incr_subseq([2, 3, 1, 6, 9, 5]))
+print(longest_incr_subseq([2, 3, 1, 6]))
+print(longest_incr_subseq([10, 22, 9, 33, 21, 50, 41, 60, 80]))
