@@ -4,7 +4,6 @@ Created on Sat Sep 15 14:51:31 2018
 
 @author: gaurav
 """
-"""========Combinations========="""
 
 
 def create_subsets(arr):
@@ -38,10 +37,12 @@ def create_subsets(arr):
     return res
 
 
+print(create_subsets.__name__)
 out = create_subsets([1, 2])
 print(len(out), "-", out)
 out = create_subsets([1, 2, 3, 4])
 print(len(out), "-", out)
+print("--------------------")
 
 
 def create_subsets_bits(arr):
@@ -61,9 +62,35 @@ def create_subsets_bits(arr):
     return vals
 
 
+print(create_subsets_bits.__name__)
 out = create_subsets_bits([1, 2])
 print(len(out), "-", out)
 out = create_subsets_bits([1, 2, 3, 4])
 print(len(out), "-", out)
+print("--------------------")
 
-"""========Permutations========="""
+
+def permutations(arr):
+    """permutations of given
+    string. N! different"""
+    if not arr:
+        return [[]]
+    if len(arr) == 1:
+        return [arr]
+    if len(arr) == 2:
+        return [arr, [arr[1], arr[0]]]
+
+    result = []
+    for i in range(len(arr)):
+        v = arr[i]  # use each element as first elem
+        rest = arr[:i] + arr[i+1:]  # permute others
+        result.extend([[v] + x for x in permutations(rest)])
+
+    return result
+
+
+print(permutations.__name__)
+print(permutations([1, 2, 3]))
+print(len(permutations([1, 2, 3, 4])))
+print(len(permutations([1, 2, 3, 4, 5])))
+print(len(permutations([1, 2, 3, 4, 5, 6, 7])))
