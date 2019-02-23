@@ -3,6 +3,10 @@
 Created on Sat Sep 15 14:51:31 2018
 
 @author: gaurav
+
+subsets and permutations: permutations
+are special set of subsets that've all
+elements of initial set to choose from
 """
 
 
@@ -72,7 +76,7 @@ print("--------------------")
 
 def permutations(arr):
     """permutations of given
-    string. N! different"""
+    string. N! different."""
     if not arr:
         return [[]]
     if len(arr) == 1:
@@ -94,3 +98,4 @@ print(permutations([1, 2, 3]))
 print(len(permutations([1, 2, 3, 4])))
 print(len(permutations([1, 2, 3, 4, 5])))
 print(len(permutations([1, 2, 3, 4, 5, 6, 7])))
+print(len(permutations([1, 2, 3, 4, 5, 6, 7, 8])))
