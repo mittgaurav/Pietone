@@ -4,7 +4,10 @@ Created on Sat Feb 16 22:56:07 2019
 
 @author: gaurav
 """
-
+# NOT CORRECT
+# NOT CORRECT
+# NOT CORRECT
+# NOT CORRECT
 
 def skyline(arr):
     """A skyline for given
