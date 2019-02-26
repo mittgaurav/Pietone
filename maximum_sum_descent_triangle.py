@@ -7,6 +7,7 @@ Created on Wed Oct 31 09:35:52 2018
 
 
 def get(mat, i, j):
+    """safe get from matrix"""
     if i < 0:
         return 0
     if j < 0 or j >= len(mat[i]):
@@ -22,11 +23,11 @@ def maximum_sum_descent(arr):
     1696
     """
     matrix = []
-    for i in range(0, len(arr)):
-        matrix.insert(i, list())
-        for j in range(0, i+1):
-            matrix[i].insert(j, arr[i][j] + max(get(matrix, i-1, j),
-                                                get(matrix, i-1, j-1)))
+    for i in range(len(arr)):
+        matrix.append(list())
+        for j in range(i+1):
+            matrix[i].append(arr[i][j] + max(get(matrix, i-1, j),
+                                             get(matrix, i-1, j-1)))
     return max(matrix[i])
 
 
