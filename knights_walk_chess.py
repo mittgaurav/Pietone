@@ -3,9 +3,15 @@
 Created on Sun Jan 13 18:03:59 2019
 
 @author: gaurav
+
+knight's tour across the board.
+Start from (0, 0) and see if we
+can make the next step. Keep it
+going till we can't. Then back-
+track and try next value.
 """
 
-N = 4
+N = 5
 board = [[0 for _ in range(N)] for _ in range(N)]
 
 steps = 0
@@ -24,7 +30,7 @@ def step(i, j):
     steps += 1
     board[i][j] = steps
 
-    if steps == N ** 2:
+    if steps == N ** 2:  # consumed all board
         return True
 
     for x in [i-2, i+2]:
@@ -37,6 +43,9 @@ def step(i, j):
             if step(x, y):
                 return True
 
+    # we have no way
+    # to see through
+    # this location.
     board[i][j] = 0
     steps -= 1
     return False
