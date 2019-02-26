@@ -30,11 +30,11 @@ def get(matrix, i):
 def maxSubsetSum_dp(arr):
     """similar to non-dp but indices
     reversed. But similar model"""
-    mat = list()
+    m = list()
     for i in range(0, len(arr)):
-        mat.append(max(get(mat, i-1), max(0, arr[i]) + get(mat, i-2)))
+        m.append(max(get(m, i-1), max(0, arr[i]) + get(m, i-2)))
 
-    return mat[-1]
+    return m[-1]
 
 
 print(maxSubsetSum_dp([1]))
