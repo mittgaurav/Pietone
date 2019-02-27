@@ -144,3 +144,40 @@ def longest_increasing_subarray(arr):
 print("====longest_increasing_subarray====")
 print(longest_increasing_subarray([1, 2, 3, 4, 5, 6, 1, 4, 6, 9]))
 print(longest_increasing_subarray([1, 2, 3, 4, 5]))
+
+
+def meandering_array(arr):
+    """return meandering sort
+    rearrange an array in minimum-maximum form.
+
+    Prints max at first position, min at second position
+    second max at third position, second min at fourth...
+    """
+    ret = []
+
+    arr.sort()
+
+    # Indices of smallest and largest elements from
+    # remaining array. Small goes up, large comes down
+    small, large = 0, len(arr) - 1
+
+    # To indicate whether we need to copy remaining
+    # largest or remaining smallest at next position
+    flag = True
+
+    for _ in range(len(arr)):
+        if flag:
+            ret.append(arr[large])
+            large -= 1
+        else:
+            ret.append(arr[small])
+            small += 1
+
+        flag = not flag
+
+    return ret
+
+
+print("==", meandering_array.__name__, "==")
+A = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+print(A, meandering_array(A))
