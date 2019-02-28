@@ -181,3 +181,36 @@ def meandering_array(arr):
 print("==", meandering_array.__name__, "==")
 A = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 print(A, meandering_array(A))
+
+
+def nth_compartment_rev(size, N):
+    """reverse every nth
+    compartment in train"""
+    if size < N:  # wrap-around
+        N %= size
+
+    if N == 1:  # elems stay in place
+        return list(range(1, size + 1))
+    if size == N:  # reverse every elem
+        return list(range(size, 0, -1))
+
+    ret = list(range(1, size+1))
+    i = 0
+    while i < size - N + 1:
+        ii = i
+        j = i + N - 1
+        while i < j:
+            ret[i], ret[j] = ret[j], ret[i]
+            i += 1
+            j -= 1
+        i = ii + N  # move i to next batch
+
+    return ret
+
+
+print("===", nth_compartment_rev.__name__, "===")
+print(nth_compartment_rev(9, 3))
+print(nth_compartment_rev(9, 8))
+print(nth_compartment_rev(9, 10))
+print(nth_compartment_rev(9, 1))
+print(nth_compartment_rev(9, 5))
