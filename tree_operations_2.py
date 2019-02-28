@@ -5,7 +5,7 @@ Created on Wed Jan  2 18:59:02 2019
 @author: gaurav
 """
 from tree import Tree
-import binary_search_ge as BSGE
+import binary_searches as BSGE
 
 
 def deepest_node(tree, depth=0):
