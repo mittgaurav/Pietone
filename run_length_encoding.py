@@ -160,7 +160,7 @@ def flatten(inp_obj):
 
 
 print(flatten.__name__)
-print(flatten({
+assert [print({k: v}) for k, v in flatten({
     'name': 'jane',
     'last_name': 'doe',
     'profession': 'engineer',
@@ -170,8 +170,9 @@ print(flatten({
         'experience': {
             '2012': 'college passout',
             '2014': 'mba passout',
-            '2016': 'employed'
+            '2016': 'employed',
+            '2019': 'unemployed'
         }
     }
-}))
+}).items()]
 print("-----------------")
