@@ -54,6 +54,7 @@ print("--------------------")
 def l_p_string(arr):
     """contiguous string
     that's a palindrome"""
+    ### NOT CORRECT
     if not arr:
         return (0, True)
     if len(arr) == 1:
