@@ -47,7 +47,7 @@ def longest_palin_dp(arr, i, j) -> 'int':
 print(longest_palin_seq.__name__)
 for A in ["abdbca", "cddpd"]:
     matrix = [[-1 for _ in A] for _ in A]
-    print(longest_palin_seq(A), longest_palin_dp(A, 0, len(A)-1))
+    print(A, longest_palin_seq(A), longest_palin_dp(A, 0, len(A)-1))
 print("--------------------")
 
 
@@ -70,6 +70,7 @@ def l_p_string(arr):
 
     val, club = l_p_string(arr[1:-1])
     if club:  # inside is continuous
+        #  Club with the outer match
         val += 2
 
     # now, it may happen that sub-str
@@ -82,12 +83,12 @@ def l_p_string(arr):
 
 
 print(l_p_string.__name__)
-print(l_p_string("abab"))
-print(l_p_string("babad"))
-print(l_p_string("abbccbba"))
-print(l_p_string("abbccbballabbccbbal"))
-print(l_p_string("abbccbballxabbccbbal"))
-print(l_p_string("rrar"))
+print("abab", l_p_string("abab"))
+print("babad", l_p_string("babad"))
+print("abbccbba", l_p_string("abbccbba"))
+print("abbccbballabbccbbal", l_p_string("abbccbballabbccbbal"))
+print("abbccbballxabbccbbal", l_p_string("abbccbballxabbccbbal"))
+print("rrar", l_p_string("rrar"))
 print("--------------------")
 
 
