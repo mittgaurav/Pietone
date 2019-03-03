@@ -11,6 +11,7 @@ class Node:
     def __init__(self, _val, _next=None):
         self.val = _val
         self.next = _next
+        self.now = None
 
     def __str__(self):
         val = str(self.val)
@@ -41,23 +42,21 @@ class Node:
         return n
 
 
-if __name__ is "__main__":
-    """NOT CORRECT"""
-    """NOT CORRECT"""
-    """NOT CORRECT"""
+def reverse():
+    """reverse a linked list"""
     A = Node(1, Node(2, Node(3, Node(4, Node(5)))))
     print(A)
 
-    j = len(A)
-
+    current = A
     prev = None
-    x = 0
-    for i in A:
-        if x == j:
-            break
-        x += 1
-        temp = prev
-        prev = i.next
-        i.next = temp
+    while current:
+        nxt = current.next
+        current.next = prev
+        prev = current
+        current = nxt
 
-    print(i)
+    print(prev)
+
+
+if __name__ is "__main__":
+    reverse()
