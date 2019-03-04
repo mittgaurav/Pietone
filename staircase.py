@@ -60,6 +60,7 @@ def staircase_dp_short(n):
 
     return a
 
+
 print(staircase.__name__)
 print(staircase(4))
 print(staircase(10))
@@ -93,6 +94,7 @@ def staircase_given_steps(n, allow):
     if n in allow:
         out += 1
     return out
+
 
 print(staircase_given_steps.__name__)
 print(staircase_given_steps(4, [1]))
