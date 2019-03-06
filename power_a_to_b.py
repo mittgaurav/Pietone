@@ -10,6 +10,7 @@ cache half power results. O(log n)
 
 def power(a, b):
     """power without pow() under O(b)"""
+    print("getting power of", a, "for", b)
     if a == 0:
         return 0
 
@@ -29,5 +30,4 @@ def power(a, b):
 
 
 for A, B in [(4, 5), (2, 3), (2, -6), (12, 4)]:
-    CACHE = {}
     print(A, B, ":", pow(A, B), power(A, B))
