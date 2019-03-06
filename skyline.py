@@ -131,6 +131,29 @@ print(duplicate_nums_n.__name__, duplicate_nums_n([2, 3, 3, 1]))
 print("----------------")
 
 
-def first_missing_num_n(arr):
-    """in an unsorted array from 1 to n-1
-    find the smallest element missing"""
+def first_missing_num_n(arr, start, end):
+    """in a sorted array from 0 to n-1
+    find the smallest element missing.
+    One way, sort the array and then do
+    a binary search for index == value
+    at index."""
+    if end == start:
+        return start
+
+    if end - start == 1:
+        return start if arr[end] == end else end
+
+    mid = (end - start) // 2
+    if mid == arr[mid]:
+        return first_missing_num_n(arr, mid + 1, end)
+
+    ret = first_missing_num_n(arr, start, mid - 1)
+
+    # now, ret could be same as the value; in that
+    # mid is the first location that things go bad
+    return mid if ret == arr[ret] else ret
+
+
+print(first_missing_num_n.__name__)
+print(first_missing_num_n([0, 1, 3, 4, 5, 6, 8], 0, 6))
+print(first_missing_num_n([0, 1, 3, 4, 5], 0, 4))
