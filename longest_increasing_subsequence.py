@@ -29,11 +29,48 @@ def longest_incr_subseq(arr):
     return max(max_till)
 
 
+print("===", longest_incr_subseq.__name__, "===")
 print(longest_incr_subseq([1, 2, 4, 1, 3]))
 print(longest_incr_subseq([1, 2, 4, 1, 2, 3, 4, 5, 6, 1, 2, 4]))
 print(longest_incr_subseq([2, 3, 1, 6, 9, 5]))
 print(longest_incr_subseq([2, 3, 1, 6]))
 print(longest_incr_subseq([10, 22, 9, 33, 21, 50, 41, 60, 80]))
+
+
+def max_profit(prices):
+    """buy and sell atmost twice.
+    we are going to find the best
+    possible place to break array
+    such that buying and selling
+    before and after it gives us
+    the most total profit."""
+    if not prices:
+        return 0
+
+    # first traverse the left to right
+    # and get the best in first array
+    best_first = []
+    min_till_now = 9999999999
+    for i in range(len(prices)):
+        min_till_now = min(prices[i], min_till_now)
+        best_first.append(max(prices[i] - min_till_now,
+                              best_first[i-1] if i else -999999999))
+
+    # traverse from behind and get
+    # maximum in the second array
+    best_last = []
+    max_till_now = -999999999
+    for j in range(len(prices)-1, -1, -1):
+        max_till_now = max(prices[j], max_till_now)
+        best_last.insert(0, max(max_till_now - prices[j],
+                                best_last[0] if j < len(prices)-1
+                                else -9999999999))
+
+    return max([_1 + _2 for _1, _2 in zip(best_first, best_last)])
+
+
+print("===", max_profit.__name__, "===")
+print(max_profit([3, 3, 5, 0, 0, 3, 1, 4]))
 
 
 def longest_non_repeating_str(string):
@@ -70,6 +107,7 @@ def longest_non_repeating_str(string):
     return string[endloc - maxlen + 1:endloc + 1]
 
 
+print("===", longest_non_repeating_str.__name__, "===")
 print(longest_non_repeating_str("abcded"))
 print(longest_non_repeating_str("abcdedefgnhxzabc"))
 print(longest_non_repeating_str("abcdedefgnhabc"))
