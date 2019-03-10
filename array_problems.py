@@ -122,30 +122,6 @@ print("====print_sorted_in_range====")
 print(print_sorted_in_range([1, 2, 4, 5, 3, 6, 1, 4, 6, 9], 3, 5))
 
 
-def longest_increasing_subarray(arr):
-    """longest_increasing subarray"""
-    if len(arr) <= 1:
-        return len(arr)
-
-    last = arr[0]
-    ret = 1
-    max_ret = 1
-    for i in arr[1:]:
-        if i >= last:
-            ret += 1
-        else:
-            max_ret = max(max_ret, ret)
-            ret = 1
-        last = i
-
-    return max(max_ret, ret)
-
-
-print("====longest_increasing_subarray====")
-print(longest_increasing_subarray([1, 2, 3, 4, 5, 6, 1, 4, 6, 9]))
-print(longest_increasing_subarray([1, 2, 3, 4, 5]))
-
-
 def meandering_array(arr):
     """return meandering sort
     rearrange an array in minimum-maximum form.
