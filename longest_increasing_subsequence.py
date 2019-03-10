@@ -10,13 +10,9 @@ def longest_incr_subseq(arr):
     """longest subsequence (can be
     non-consecutive) such that all
     elems are in increasing order"""
-    if len(arr) == 0:
-        return 0
+    # For seq ending at loc i
+    max_till = [1 for _ in arr]
 
-    if len(arr) == 1:
-        return 1
-
-    val = 0
     for i in range(len(arr)):
         # for all values before
         # me, if i am more than
@@ -24,11 +20,17 @@ def longest_incr_subseq(arr):
         # longest_subseq plus 1
         for j in range(i):
             if arr[i] >= arr[j]:
-                val = max(1+longest_incr_subseq(arr[:j+1]), val)
+                max_till[i] = max(1 + max_till[j], max_till[i])
 
-    return val
+    # we have so far gotten the
+    # longest subseq ending at
+    # given i. Now, get maxim
+    # which may end anywhere
+    return max(max_till)
 
 
+print(longest_incr_subseq([1, 2, 4, 1, 3]))
+print(longest_incr_subseq([1, 2, 4, 1, 2, 3, 4, 5, 6, 1, 2, 4]))
 print(longest_incr_subseq([2, 3, 1, 6, 9, 5]))
 print(longest_incr_subseq([2, 3, 1, 6]))
 print(longest_incr_subseq([10, 22, 9, 33, 21, 50, 41, 60, 80]))
