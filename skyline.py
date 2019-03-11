@@ -115,9 +115,14 @@ print("----------------")
 
 
 def duplicate_nums_n(arr):
-    """in an unsorted array from 1 to n-1
-    find duplicates"""
+    """in an unsorted array from
+    1 to n-1, find duplicates"""
     res = set()
+
+    # flip the sign to -ve for
+    # value at ith index. Then
+    # if we got negative value
+    # then i is duplicated.
     for i in range(len(arr)):
         if arr[abs(arr[i])] < 0:
             res.add(i)
