@@ -55,9 +55,40 @@ A = [(1, 10, 4),
      (10, 12, 15),
      (18, 12, 22),
      (20, 8, 25)]
-print(skyline.__name__)
+print("====", skyline.__name__)
 skyline(A)
-print("----------------")
+
+
+def rain_water(arr):
+    """collect rain water in
+    different size building"""
+    if not arr:
+        return 0
+
+    # for i, max on right and left
+    left, right = [], []
+
+    # collect max on the left side
+    curr_max = 0
+    for i in arr:
+        left.append(curr_max)
+        curr_max = max(curr_max, i)
+
+    # collect max on the right side
+    curr_max = 0
+    for i in reversed(arr):
+        right.insert(0, curr_max)
+        curr_max = max(curr_max, i)
+
+    # for each i, get its difference to min of l/r
+    res = [max(0, min(_l, _r)-i) for _l, _r, i in
+           zip(left, right, arr)]
+
+    return sum(res)
+
+
+print("====", rain_water.__name__)
+print(rain_water([0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]))
 
 
 def main(dict_bank_list_of_times):
@@ -90,10 +121,10 @@ def main(dict_bank_list_of_times):
         my_times = times.pop(0)
         start = min(start, my_times[0])
         end = max(end, my_times[1])
-        if times:  # not the last element
+        if times:  # my_times is not the last element yet
             if end < times[0][0]:  # there is gap between
-                # current element end and next start. End
-                # right now and collect this into result
+                # current element end and next start; end
+                # right now and collect this into result.
                 res.append((start, end))
                 start = 9999999
                 end = 0
@@ -105,13 +136,12 @@ def main(dict_bank_list_of_times):
     print(res)
 
 
-print("bank_open_times")
+print("==== bank_open_times")
 main({"JPDL": [(8, 12), (13, 17)], "BARX": [(9, 13), (14, 18)]})
 main({"JPDL": [(8, 12), (13, 17)], "BARX": [(9, 13), (19, 20)]})
 main({"JPDL": [(8, 12), (13, 17), (19, 19)], "BARX": [(9, 13)]})
 main({"JPDL": [(8, 12), (13, 17), (19, 19)], "BARX": []})
 main({})
-print("----------------")
 
 
 def duplicate_nums_n(arr):
@@ -133,7 +163,6 @@ def duplicate_nums_n(arr):
 
 
 print(duplicate_nums_n.__name__, duplicate_nums_n([2, 3, 3, 1]))
-print("----------------")
 
 
 def first_missing_num_n(arr, start, end):
@@ -159,6 +188,6 @@ def first_missing_num_n(arr, start, end):
     return mid if ret == arr[ret] else ret
 
 
-print(first_missing_num_n.__name__)
+print("====", first_missing_num_n.__name__)
 print(first_missing_num_n([0, 1, 3, 4, 5, 6, 8], 0, 6))
 print(first_missing_num_n([0, 1, 3, 4, 5], 0, 4))
