@@ -109,8 +109,8 @@ print(lcs_no_dp(arr, brr, len(arr), len(brr)))
 
 
 def lcs(arr, brr):
-    # another way of doing
-    # from starting index.
+    """another way of doing
+    from starting index."""
     if len(arr) == 0 or len(brr) == 0:
         return 0
 
@@ -121,3 +121,24 @@ def lcs(arr, brr):
 
 
 print(lcs(arr, brr))
+print("==================")
+
+
+def is_subsequence(arr, brr):
+    """is brr subsequence of arr"""
+    if not brr:
+        return True
+
+    if not arr:
+        return False
+
+    if len(arr) < len(brr):
+        return False
+
+    if arr[0] == brr[0]:
+        brr = brr[1:]
+    return is_subsequence(arr[1:], brr)
+
+
+print("abcde", "abc", is_subsequence("abcde", "abc"))
+print("abcde", "acb", is_subsequence("abcde", "acb"))
