@@ -71,7 +71,7 @@ print(duplicate_ints([1, 2, 3, 4, 5, 6]))
 print(duplicate_ints([1, 2, 3, 4, 5, 6, 1]))
 
 
-def find_int_with_sum(arr, v):
+def find_ints_with_sum(arr, v):
     """find two ints with sum v"""
     seen = {}
     for a in arr:
@@ -84,9 +84,35 @@ def find_int_with_sum(arr, v):
 
 
 print("====find_int_with_sum====")
-print(find_int_with_sum([1, 2, 3, 4, 5, 6, 1, 4, 6, 9], 12))
-print(find_int_with_sum([1, 2, 3, 4, 5, 6, 1, 4, 6, 9], 1))
-print(find_int_with_sum([1, 2, 3, 4, 5, 6, 1, 4, 6, 9], 2))
+print(find_ints_with_sum([1, 2, 3, 4, 5, 6, 1, 4, 6, 9], 12))
+print(find_ints_with_sum([1, 2, 3, 4, 5, 6, 1, 4, 6, 9], 1))
+print(find_ints_with_sum([1, 2, 3, 4, 5, 6, 1, 4, 6, 9], 2))
+
+
+def two_sum(arr, k):
+    """find two elements that
+    are closest to a num k"""
+    if not arr:
+        return -1
+
+    arr = sorted(arr)
+    i = 0
+    j = len(arr)-1
+
+    curr_diff = 999999
+    while i < j:
+        my_sum = arr[i] + arr[j]
+        if my_sum > k:
+            j -= 1
+        else:
+            i += 1
+
+        curr_diff = min(curr_diff, abs(my_sum - k))
+    return curr_diff
+
+
+print("====two_sum====")
+print(two_sum([-1, 2, 1, -4], 4))
 
 
 def print_sorted_in_range(arr, a, b):
