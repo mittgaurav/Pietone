@@ -214,3 +214,55 @@ print(zigzap_level_order(T))
 print("===========================")
 # ==================================
 # ==================================
+
+
+def spiral_print(tree):
+    """
+          1
+       2     3
+    4   5   6 7
+    8 9 10
+    spiral printing: 1 3 2 4 5 6 7 10 9 8
+
+    Q1
+    1
+    2, 3
+    4, 5, 6, 7
+    8, 9, 10
+    ----
+
+    Q2
+    1 - flag = left to right ---- 1
+    2, 3 - flag = right to left --- 3 2
+    4, 5, 6, 7 - flag = left to right ---- 4 5 6 7
+    8, 9, 10 - flag = right to left ----- 10 9 8
+    """
+    if not tree:
+        return
+
+    arr = [tree]
+    flag_lr = True
+
+    while arr:
+        nums = len(arr)
+        current = 0
+        while current < nums:
+            this = arr[current]
+            if this.left:
+                arr.append(this.left)
+            if this.right:
+                arr.append(this.right)
+            current += 1
+
+        if flag_lr:
+            print([_.data for _ in arr[:nums]])
+        else:
+            print([_.data for _ in reversed(arr[:nums])])
+
+        flag_lr = not flag_lr
+        arr = arr[nums:]
+
+
+print(spiral_print.__name__)
+print(T)
+spiral_print(T)
