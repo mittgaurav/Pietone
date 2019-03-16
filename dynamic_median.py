@@ -63,5 +63,4 @@ for i in [6, 1, 3, 5, 7, 4, 8, 2, 9]:
     A.add(i)
     B.append(i)
     B.sort()
-    print(A, B)
-    print(A.get_median(), np.median(B))
+    print(B, "==", A.get_median(), "|", np.median(B))
