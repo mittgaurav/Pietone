@@ -19,6 +19,9 @@ first loop fills the 0 sizes.
 then iterate over each weight
 for the total weight and fill
 the matrix with max possible.
+
+Can be used to solve meetings
+problem; values equal weights
 """
 matrix = []
 
@@ -55,16 +58,17 @@ def knapsack(arrW, arrV, total):
 
 def knapsack_no_dp(arrW, arrV, a, total):
     """No dp"""
-    if a == 0:
+    if a == 0:  # 0-length array
         return 0
     rem_wt = total - arrW[a-1]
     if rem_wt >= 0:
         v1 = arrV[a-1] + knapsack_no_dp(arrW, arrV, a-1, rem_wt)
     else:
         v1 = 0
-    return max(v1,
-               knapsack_no_dp(arrW, arrV, a-1, total))
+    return max(v1, knapsack_no_dp(arrW, arrV, a-1, total))
 
 
 print(knapsack([1, 3, 4, 5], [1, 4, 5, 7], 7))
 print(knapsack_no_dp([1, 3, 4, 5], [1, 4, 5, 7], 4, 7))
+print(knapsack([1, 3, 4, 5], [1, 3, 4, 5], 7))
+print(knapsack_no_dp([1, 3, 4, 5], [1, 3, 4, 5], 4, 7))
