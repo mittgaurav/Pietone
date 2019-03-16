@@ -68,6 +68,6 @@ if __name__ is "__main__":
         n = int(random.random() * 10000)
         if n not in Ns and n in BF:
             total += 1
-            print(total, "warning", n)
+            # print(total, "warning", n)
 
     print("perfection", 100 - (total/N * 100), "percent")
