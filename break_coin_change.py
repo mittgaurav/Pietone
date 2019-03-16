@@ -36,7 +36,7 @@ def make_change_no_dp(arr, a, final):
         # whether remaining a-1 coin
         # can fill up remaining gap.
         # I've choosen this coin too
-        vals.append(int(n/arr[a-1]) +
+        vals.append(n // arr[a-1] +
                     make_change_no_dp(arr, a-1, final-n))
     return min(vals)
 
