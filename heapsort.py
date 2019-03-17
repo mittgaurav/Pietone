@@ -18,7 +18,7 @@ def swim_up(arr, i):
     its right place"""
     if i <= 0:
         return
-    par = int((i - 1)/2)
+    par = (i - 1) // 2
     if arr[par] >= arr[i]:
         return
     swap(arr, i, par)
