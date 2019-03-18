@@ -53,3 +53,6 @@ def magical_strings(n):
 if __name__ == '__main__':
     print(magical_strings(3))
     print(magical_strings(30))
+    print(magical_strings(100))
+    print(magical_strings(1000))
+    print(magical_strings(10000))
