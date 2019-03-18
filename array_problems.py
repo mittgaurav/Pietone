@@ -216,3 +216,51 @@ print(nth_compartment_rev(9, 8))
 print(nth_compartment_rev(9, 10))
 print(nth_compartment_rev(9, 1))
 print(nth_compartment_rev(9, 5))
+
+
+def duplicate_nums_n(arr):
+    """in an unsorted array from
+    1 to n-1, find duplicates"""
+    res = set()
+
+    # flip the sign to -ve for
+    # value at ith index. Then
+    # if we got negative value
+    # then i is duplicated.
+    for i in range(len(arr)):
+        if arr[abs(arr[i])] < 0:
+            res.add(i)
+        else:
+            arr[i] = -arr[i]
+
+    return res
+
+
+print(duplicate_nums_n.__name__, duplicate_nums_n([2, 3, 3, 1]))
+
+
+def first_missing_num_n(arr, start, end):
+    """Given sorted arr from 0 to n-1
+    find the smallest element missing.
+    One way, do binary search for the
+    index i == val at index arr[i]"""
+    if end == start:
+        return start
+
+    if end - start == 1:  # two elems: 0 or 1
+        return start if arr[end] == end else end
+
+    mid = (end - start) // 2
+    if mid == arr[mid]:  # all fine upto mid
+        return first_missing_num_n(arr, mid + 1, end)
+
+    ret = first_missing_num_n(arr, start, mid - 1)
+
+    # now, ret could be same as the value; in that
+    # mid is the first location that things go bad
+    return mid if ret == arr[ret] else ret
+
+
+print("====", first_missing_num_n.__name__)
+print(first_missing_num_n([0, 1, 3, 4, 5, 6, 8], 0, 6))
+print(first_missing_num_n([0, 1, 3, 4, 5], 0, 4))
