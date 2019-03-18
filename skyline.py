@@ -91,6 +91,38 @@ print("====", rain_water.__name__)
 print(rain_water([0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]))
 
 
+def merge_intervals(intervals):
+    """merge overlap-
+    ping intervals"""
+    out = []
+    if not intervals:
+        return out
+
+    start = intervals[0][0]
+    end = intervals[0][1]
+
+    for i in intervals[1:]:
+        new_start = i[0]
+        new_end = i[1]
+        if new_start <= end:  # overlapping elements
+            end = max(end, new_end)
+        else:  # New is after end. There's gap between
+            # current element end and next start; end
+            # right now and collect this into result
+            out.append((start, end))
+            start = new_start
+            end = new_end
+
+    out.append((start, end))
+
+    return out
+
+
+print("====", merge_intervals.__name__)
+print(merge_intervals([[1, 3], [2, 6], [8, 10], [15, 18]]))
+print(merge_intervals([[1, 4], [4, 5]]))
+
+
 def main(dict_bank_list_of_times):
     """
     Bank hours problem
@@ -113,27 +145,7 @@ def main(dict_bank_list_of_times):
 
     times.sort(key=lambda x: x[0])
 
-    res = []
-
-    start = 9999999
-    end = 0
-    while times:
-        my_times = times.pop(0)
-        start = min(start, my_times[0])
-        end = max(end, my_times[1])
-        if times:  # my_times is not the last element yet
-            if end < times[0][0]:  # there is gap between
-                # current element end and next start; end
-                # right now and collect this into result.
-                res.append((start, end))
-                start = 9999999
-                end = 0
-
-    if start != 9999999:
-        # there has been no gap
-        res.append((start, end))
-
-    print(res)
+    print(merge_intervals(times))
 
 
 print("==== bank_open_times")
@@ -142,52 +154,3 @@ main({"JPDL": [(8, 12), (13, 17)], "BARX": [(9, 13), (19, 20)]})
 main({"JPDL": [(8, 12), (13, 17), (19, 19)], "BARX": [(9, 13)]})
 main({"JPDL": [(8, 12), (13, 17), (19, 19)], "BARX": []})
 main({})
-
-
-def duplicate_nums_n(arr):
-    """in an unsorted array from
-    1 to n-1, find duplicates"""
-    res = set()
-
-    # flip the sign to -ve for
-    # value at ith index. Then
-    # if we got negative value
-    # then i is duplicated.
-    for i in range(len(arr)):
-        if arr[abs(arr[i])] < 0:
-            res.add(i)
-        else:
-            arr[i] = -arr[i]
-
-    return res
-
-
-print(duplicate_nums_n.__name__, duplicate_nums_n([2, 3, 3, 1]))
-
-
-def first_missing_num_n(arr, start, end):
-    """in a sorted array from 0 to n-1
-    find the smallest element missing.
-    One way, sort the array and then do
-    a binary search for index == value
-    at index."""
-    if end == start:
-        return start
-
-    if end - start == 1:
-        return start if arr[end] == end else end
-
-    mid = (end - start) // 2
-    if mid == arr[mid]:
-        return first_missing_num_n(arr, mid + 1, end)
-
-    ret = first_missing_num_n(arr, start, mid - 1)
-
-    # now, ret could be same as the value; in that
-    # mid is the first location that things go bad
-    return mid if ret == arr[ret] else ret
-
-
-print("====", first_missing_num_n.__name__)
-print(first_missing_num_n([0, 1, 3, 4, 5, 6, 8], 0, 6))
-print(first_missing_num_n([0, 1, 3, 4, 5], 0, 4))
