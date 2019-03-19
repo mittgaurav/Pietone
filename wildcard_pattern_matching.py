@@ -9,12 +9,12 @@ Created on Thu Nov  8 19:24:26 2018
 def wildcard_matching_no_dp(string, pat):
     """tell whether pattern represents
     string as wildcard. '*' and '?'"""
-    if len(pat) == 0:
-        return len(string) == 0
+    if not pat:
+        return not string
 
-    if len(string) == 0:
-        for i in range(0, len(pat)):
-            if pat[i] is not '*':
+    if not string:
+        for i in pat:
+            if i is not '*':
                 return False
         return True
 
@@ -44,12 +44,13 @@ def get(matrix, i, j):
 
 
 def wildcard_matching_dp(string, pat):
-    if len(pat) == 0:
-        return len(string) == 0
+    """memoization"""
+    if not pat:
+        return not string
 
-    if len(string) == 0:
-        for i in range(0, len(pat)):
-            if pat[i] is not '*':
+    if not string:
+        for i in pat:
+            if i is not '*':
                 return False
         return True
 
