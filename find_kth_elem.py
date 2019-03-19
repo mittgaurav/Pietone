@@ -94,13 +94,14 @@ def find_vals_between_locations(arr, i, j):
     def keep_partitioning(arr, start, loc, end):
         """keep partitioning as long
         as partition is not at loc"""
-        p = -1
-        while p != loc:
+        while True:
             p = partition(arr, start, end)
             if p > loc:
                 end = p - 1
             elif p < loc:
                 start = p + 1
+            else:  # p is loc
+                break
 
     # lower partition is from 0 to len
     keep_partitioning(arr, 0, i, len(arr) - 1)
