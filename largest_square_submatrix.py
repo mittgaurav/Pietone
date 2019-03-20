@@ -105,7 +105,7 @@ def square_submatrix_short(input):
                               matrix[i-1][j-1])
             else:
                 val = 0
-            matrix[i].insert(j, val)
+            matrix[i][j] = val
             m = max(m, val)
     return m
 
