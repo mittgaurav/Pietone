@@ -9,13 +9,6 @@ from memory_profiler import profile
 import pandas as pd
 
 
-@profile
-def abc():
-    print("hi")
-
-
-abc()
-
 print("------------")
 print("===np tuples")
 # numpy arrays are homogeneous multi-dimensional arrays
@@ -30,15 +23,35 @@ a = np.array([[1, 2, 3], [1, 4, 5]])
 b = np.array([[5, 4], [7, 8], [2, 3]])
 print(a*a)
 print(np.asmatrix(a) * np.asmatrix(b))
-print(a @ b)
+print(a @ b)  # dot product
+print("===vectorize")
+c = np.array([[2, 1, 3], [3, 5, 2]])
+print(a, c)
+
+
+@profile
+def out(x, y):
+    """vectorize just makes the function
+    take a[] and b[] instead of a / b"""
+    if x > y:
+        return x + y
+    else:
+        return x - y
+
+
+print(np.vectorize(out)(a, c))
+print(c, c.reshape(3, -1))
+
+print("====mask/indexing")
+print(a > 2, a[a > 2])
+print(a[1, 2])
 
 print("------------")
 print("====series")
 s = pd.Series(np.random.randn(5), index=['a', 'b', 'c', 'd', 'e'])
 print(s)
-print("------------")
 
+print("------------")
 print("===dataframe")
 df = pd.DataFrame({"a": [1, 2], "b": [45, 'x'], "c": [2, 1]})
 print(df.to_csv(index=False))
-print("------------")
