@@ -33,10 +33,7 @@ print(a, c)
 def out(x, y):
     """vectorize just makes the function
     take a[] and b[] instead of a / b"""
-    if x > y:
-        return x + y
-    else:
-        return x - y
+    return x + y if x > y else x - y
 
 
 print(np.vectorize(out)(a, c))
