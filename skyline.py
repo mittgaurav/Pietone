@@ -154,3 +154,29 @@ main({"JPDL": [(8, 12), (13, 17)], "BARX": [(9, 13), (19, 20)]})
 main({"JPDL": [(8, 12), (13, 17), (19, 19)], "BARX": [(9, 13)]})
 main({"JPDL": [(8, 12), (13, 17), (19, 19)], "BARX": []})
 main({})
+
+
+def total_time(arr):
+    """tell total time that user
+    watched tv, given blocks"""
+    if not arr:
+        return 0
+
+    arr.sort(key=lambda x: x[0])
+
+    prev_end = 0
+    time = 0
+    for i in arr:
+        if i[0] < prev_end:
+            time += max(0, i[1] - prev_end)
+        else:
+            time += i[1] - i[0]
+        prev_end = max(prev_end, i[1])
+
+    return time
+
+
+print("====", total_time.__name__)
+print(total_time([[10, 20], [15, 25]]))
+print(total_time([[10, 20], [22, 25]]))
+print(total_time([[10, 20], [1, 25]]))
