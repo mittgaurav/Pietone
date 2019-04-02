@@ -48,18 +48,21 @@ print(a[1, 2])
 def nearest_neighbours():
     """nearest neighbours with numpy"""
     N = 4
-    # 1000 points with x, y, z coordinates
+    # points with x, y, z coordinates
     points = np.random.random((N, 3))
+    print("---points\n", points)
 
     # same points as 1-D array of x, y, z.
     # this is insane. we have brought each
     # point to same cardinality as points.
     pps = points.reshape(N, 1, 3)
+    print("---pps\n", pps)
 
     # now broadcasting
     # to generate diff
     # coordinate wise.
     pps = pps - points  # x-x, y-y, z-z
+    print("---pps diffs\n", pps)
     pps **= 2  # (x-x)^2
     pps = pps.sum(2)  # dx^2 + dy^2 + dz^2
 
@@ -70,7 +73,7 @@ def nearest_neighbours():
 
 
 print("===neighbours")
-print(nearest_neighbours())
+print("---result\n", nearest_neighbours())
 
 print("------------")
 print("====series")
