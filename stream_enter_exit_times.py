@@ -18,6 +18,12 @@ STREAMS = [  # user id - step - time - enter?
     (15, 1, datetime(2014, 4, 11, 8, 12), True),
     (13, 2, datetime(2014, 4, 11, 8, 15), True),
     (15, 1, datetime(2014, 4, 11, 8, 20), False),
+    (10, 2, datetime(2014, 4, 11, 8, 30), False),
+    (15, 2, datetime(2014, 4, 11, 8, 30), True),
+    (12, 2, datetime(2014, 4, 11, 8, 32), True),
+    (12, 2, datetime(2014, 4, 11, 8, 32), False),
+    (13, 2, datetime(2014, 4, 11, 8, 40), False),
+    (15, 2, datetime(2014, 4, 11, 8, 45), False),
     ]
 
 
