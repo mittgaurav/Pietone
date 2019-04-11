@@ -28,7 +28,7 @@ current elem is the first larger val
 def _bs(arr, num, begin, end):
     if end < begin:
         return -1
-    if begin == end:
+    if begin == end:  # one element, is it larger
         return begin if arr[begin] >= num else -1
 
     mid = (begin + end) // 2  # integer div
@@ -49,16 +49,17 @@ def binary_search_ge(arr, num):
     """find number equal to or
     least larger than given"""
     loc = _bs(arr, num, 0, len(arr) - 1)
-    return loc, arr[loc]
+    return loc, arr[loc] if loc >= 0 else None
 
 
-if __name__ is "__main__":
+if __name__ == "__main__":
     print("====", binary_search_ge.__name__)
-    print(binary_search_ge([1, 2, 3, 4, 5, 7, 8], 0))
-    print(binary_search_ge([1, 2, 3, 4, 5, 7, 8], 10))
-    print(binary_search_ge([1, 2, 3, 4, 5, 7, 8], 1))
-    print(binary_search_ge([1, 2, 3, 4, 5, 7, 8], 6))
-    print(binary_search_ge([1, 2, 3, 4, 5, 7, 8], -1))
+    print(0, binary_search_ge([1, 2, 3, 4, 5, 7, 8], 0))
+    print(10, binary_search_ge([1, 2, 3, 4, 5, 7, 8], 10))
+    print(1, binary_search_ge([1, 2, 3, 4, 5, 7, 8], 1))
+    print(8, binary_search_ge([1, 2, 3, 4, 5, 7, 8], 8))
+    print(6, binary_search_ge([1, 2, 3, 4, 5, 7, 8], 6))
+    print(-1, binary_search_ge([1, 2, 3, 4, 5, 7, 8], -1))
 
 
 def binary_search_rotated_array(arr, i, j):
@@ -80,7 +81,7 @@ def binary_search_rotated_array(arr, i, j):
         return binary_search_rotated_array(arr, mid+1, len(arr))
 
 
-if __name__ is "__main__":
+if __name__ == "__main__":
     print("====", binary_search_rotated_array.__name__)
     A = [3, 4, 5, 6, 7, -9, 2]
     print(binary_search_rotated_array(A, 0, len(A)))
