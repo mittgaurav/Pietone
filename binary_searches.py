@@ -28,21 +28,18 @@ current elem is the first larger val
 def _bs(arr, num, begin, end):
     if end < begin:
         return -1
-    if begin == end:  # one element, is it larger
+    if begin == end:  # one element, is it >=?
         return begin if arr[begin] >= num else -1
 
     mid = (begin + end) // 2  # integer div
-    if arr[mid] == num:
-        return mid
-    if arr[mid] < num:
+    if arr[mid] < num:  # less num, go more
         return _bs(arr, num, mid + 1, end)
-    if arr[mid] > num:
-        loc = _bs(arr, num, begin, mid - 1)
 
-        # if we can't find lesser
-        # larger. I'm the largest
-        return mid if (-1 == loc) else loc
-    return -1
+    # mid is equal or greater.
+    # if we can't find lesser
+    # larger, I'm the largest.
+    loc = _bs(arr, num, begin, mid - 1)
+    return mid if loc == -1 else loc
 
 
 def binary_search_ge(arr, num):
@@ -56,10 +53,43 @@ if __name__ == "__main__":
     print("====", binary_search_ge.__name__)
     print(0, binary_search_ge([1, 2, 3, 4, 5, 7, 8], 0))
     print(10, binary_search_ge([1, 2, 3, 4, 5, 7, 8], 10))
-    print(1, binary_search_ge([1, 2, 3, 4, 5, 7, 8], 1))
+    print(1, binary_search_ge([1, 1, 1, 1, 1, 2, 3, 4, 5, 7, 8], 1))
     print(8, binary_search_ge([1, 2, 3, 4, 5, 7, 8], 8))
     print(6, binary_search_ge([1, 2, 3, 4, 5, 7, 8], 6))
     print(-1, binary_search_ge([1, 2, 3, 4, 5, 7, 8], -1))
+
+
+def _bss(arr, num, begin, end):
+    """internal"""
+    if begin > end:
+        return -1
+    if begin == end:
+        return begin if arr[begin] > num else -1
+
+    mid = (begin + end) // 2
+    if arr[mid] <= num:
+        return _bss(arr, num, mid + 1, end)
+
+    # mid is larger. So are
+    # there smaller larger?
+    loc = _bss(arr, num, begin, mid - 1)
+    return mid if loc == -1 else loc
+
+
+def binary_search_greater(arr, num):
+    """find num greater than given"""
+    loc = _bss(arr, num, 0, len(arr) - 1)
+    return loc, arr[loc] if loc >= 0 else None
+
+
+if __name__ == "__main__":
+    print("====", binary_search_greater.__name__)
+    print(0, binary_search_greater([1, 2, 3, 4, 5, 7, 8], 0))
+    print(10, binary_search_greater([1, 2, 3, 4, 5, 7, 8], 10))
+    print(1, binary_search_greater([1, 2, 3, 4, 5, 7, 8], 1))
+    print(8, binary_search_greater([1, 2, 3, 4, 5, 7, 8], 8))
+    print(6, binary_search_greater([1, 2, 3, 4, 5, 7, 8], 6))
+    print(-1, binary_search_greater([1, 2, 3, 4, 5, 7, 8], -1))
 
 
 def binary_search_rotated_array(arr, i, j):
@@ -77,8 +107,8 @@ def binary_search_rotated_array(arr, i, j):
 
     if arr[mid] < arr[0]:
         return binary_search_rotated_array(arr, i, mid)
-    else:
-        return binary_search_rotated_array(arr, mid+1, len(arr))
+
+    return binary_search_rotated_array(arr, mid+1, len(arr))
 
 
 if __name__ == "__main__":
