@@ -117,3 +117,61 @@ if __name__ == "__main__":
     print(binary_search_rotated_array(A, 0, len(A)))
     A = [5, 6, 7, 8, 9, 10, 1, 2, 3, 4]
     print(binary_search_rotated_array(A, 0, len(A)))
+
+
+def search_infinite_array(arr, v):
+    """search for a val in
+    an infinite array"""
+
+    def search(l, r):
+        """internal"""
+        if r < l:
+            return -1
+        if r == l:
+            return -1 if arr[l] != v else l
+        m = (l + r) // 2
+        if arr[m] < v:
+            return search(m+1, r*2)
+        elif arr[m] == v:
+            return m
+        else:
+            return search(l, m-1)
+
+    return search(0, 1)
+
+
+if __name__ == "__main__":
+    print("====", search_infinite_array.__name__)
+    arr = range(12, 100000, 6)
+    print(search_infinite_array(arr, 408))
+    print(search_infinite_array(arr, 2))
+    print(search_infinite_array(arr, 200))
+
+
+def infinite_array_less_than(arr, v):
+    """search for a val in
+    an infinite array, the
+    val just smaller than"""
+
+    def search(l, r):
+        """internal"""
+        if r < l:
+            return -1
+        if r == l:
+            return -1 if arr[l] >= v else l
+        m = (l + r) // 2
+        if arr[m] < v:
+            index = search(m+1, r*2)
+            return m if index == -1 else index
+        elif arr[m] >= v:
+            return search(l, m-1)
+
+    return search(0, 1)
+
+
+if __name__ == "__main__":
+    print("====", infinite_array_less_than.__name__)
+    arr = range(12, 100000, 6)
+    print(infinite_array_less_than(arr, 408), arr[65], arr[66])
+    print(infinite_array_less_than(arr, 2))
+    print(infinite_array_less_than(arr, 200), arr[31], arr[32])
