@@ -5,10 +5,10 @@ Created on Mon Oct 15 00:44:07 2018
 @author: gaurav
 """
 
-map = {}
+struct = {}
 i = 1
-for c in "abcdefghijklmnopqrstuvwxyz":
-    map[i] = c
+for char in "abcdefghijklmnopqrstuvwxyz":
+    struct[i] = char
     i += 1
 
 
@@ -17,16 +17,16 @@ def decode_message(n):
         return [""]
 
     if n <= 10:
-        return [map[n]]
+        return [struct[n]]
 
-    if n >= 11 and n < 20:
-        return [map[n], "a" + map[n % 10]]
+    if 11 <= n < 20:
+        return [struct[n], "a" + struct[n % 10]]
 
     if n == 20:
-        return [map[n]]
+        return [struct[n]]
 
-    if n >= 21 and n <= 26:
-        return [map[n], "b" + map[n % 20]]
+    if 21 <= n <= 26:
+        return [struct[n], "b" + struct[n % 20]]
 
     if n > 26:
         x = n
@@ -46,20 +46,47 @@ def decode_message(n):
             c = n - (a * (10 ** (power_of_ten - 1)))
 
             if a > 26:
-                return [map[b] + v for v in decode_message(d)]
-            if a >= 21 and a <= 26:
-                return [map[a] + v for v in decode_message(c)] \
-                     + [map[b] + v for v in decode_message(d)]
+                return [struct[b] + v for v in decode_message(d)]
+            if 21 <= a <= 26:
+                return [struct[a] + v for v in decode_message(c)] \
+                     + [struct[b] + v for v in decode_message(d)]
             if a == 20:
-                return [map[a] + v for v in decode_message(c)]
-            if a >= 11 and a < 20:
-                return [map[a] + v for v in decode_message(c)] \
-                     + [map[b] + v for v in decode_message(d)]
+                return [struct[a] + v for v in decode_message(c)]
+            if 11 <= a < 20:
+                return [struct[a] + v for v in decode_message(c)] \
+                     + [struct[b] + v for v in decode_message(d)]
             if a <= 10:
-                return [map[b] + v for v in decode_message(d)]
+                return [struct[b] + v for v in decode_message(d)]
         else:
-            return [map[b] + v for v in decode_message(d)]
+            return [struct[b] + v for v in decode_message(d)]
 
 
-# print(decode_message(39885))
-print(decode_message(123))
+print(decode_message(39885))
+print(decode_message(12345))
+
+
+def decode_msg(n):
+    """decode all possible ways"""
+    val = []
+    if not n or n <= 0:
+        return [""]
+
+    x = n % 10
+    if x in struct:
+        val.extend([v + struct[x] for v in decode_msg(n // 10)])
+
+    if n >= 10:
+        x = n % 100
+        if x in struct:
+            val.extend([v + struct[x] for v in decode_msg(n // 100)])
+
+    return val
+
+
+print(decode_msg(3))
+print(decode_msg(32))
+print(decode_msg(2213))
+print(decode_msg(9))
+print(decode_msg(10))
+print(decode_msg(11))
+print(decode_msg(2213))
