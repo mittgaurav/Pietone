@@ -73,7 +73,7 @@ def partition_labels(arr):
         if arr[i] not in first:
             first[arr[i]] = i
 
-    for i in range(len(arr)-1, -1, -1):
+    for i in reversed(range(len(arr))):
         if arr[i] not in last:
             last[arr[i]] = i
 
@@ -99,3 +99,38 @@ print(partition_labels("ababfeefhijkh"))
 print(partition_labels("ababfeefhijkha"))
 print(partition_labels("ababfeefahijkh"))
 print(partition_labels("ababfeefhijkah"))
+
+
+def partition_odd_even(arr):
+    """partition first odd and
+    then even numbers"""
+    if not arr:
+        return arr
+
+    odd = 0
+    even = len(arr) - 1
+
+    while even > odd:
+        if arr[odd] % 2 == 1:  # odd
+            odd += 1
+            continue
+        if arr[even] % 2 == 0:
+            even -= 1
+            continue
+
+        # now odd is at an even value
+        # and vice versa. Hence swap.
+        arr[odd], arr[even] = arr[even], arr[odd]
+        odd += 1
+        even -= 1
+
+    return arr
+
+
+print("====", partition_odd_even.__name__)
+print(partition_odd_even([7, 3, 4, 8, 3, 9, 11, 8, 0, 1]))
+print(partition_odd_even([]))
+print(partition_odd_even([1, 2]))
+print(partition_odd_even([1, 1, 1, 1, 1, 1, 1]))
+print(partition_odd_even([2, 2, 2, 2, 2, 2, 2]))
+print(partition_odd_even([2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1]))
