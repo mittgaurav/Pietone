@@ -59,6 +59,7 @@ def decode_message(n):
                 return [struct[b] + v for v in decode_message(d)]
         else:
             return [struct[b] + v for v in decode_message(d)]
+    return [""]
 
 
 print(decode_message(39885))
@@ -73,11 +74,14 @@ def decode_msg(n):
 
     x = n % 10
     if x in struct:
+        # take the last digit, words can we form
+        # with it and the remaining of the number.
         val.extend([v + struct[x] for v in decode_msg(n // 10)])
 
     if n >= 10:
         x = n % 100
         if x in struct:
+            # take the last two digits if we can form a char
             val.extend([v + struct[x] for v in decode_msg(n // 100)])
 
     return val
