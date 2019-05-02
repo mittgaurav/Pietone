@@ -59,7 +59,7 @@ def no_parent_nodes(graph):
     # are pointed to.
     for node in graph.nodes():
         for k in graph[node]:
-            out.remove(k) if k in out else None
+            out.discard(k)
     return out
 
 
@@ -70,6 +70,8 @@ def topological_sort(graph):
     """in a DAG, figure out
     the topological sort"""
     # get parent nodes as stack
+    # this is list of nodes for
+    # traversal, in stack order
     nodes = list(no_parent_nodes(graph))
 
     sort = list()
@@ -85,14 +87,38 @@ def topological_sort(graph):
     return sort
 
 
-FN = topological_sort
+def topological_sort2(graph):
+    """another sort. Totally opposite
+    of the first one. Here, we first
+    consume leaf nodes, putting them
+    in a stack and then keep adding"""
+    if not graph:
+        return []
+
+    visited = set()
+    stack = list()
+
+    def inner(inn):
+        """inner"""
+        if inn in visited:
+            return
+        visited.add(inn)
+        for child in graph[inn]:
+            inner(child)
+        stack.append(inn)
+
+    for node in graph.nodes():
+        inner(node)
+
+    return list(reversed(stack))
 
 
 if __name__ == "__main__":
-    print(FN.__name__)
     G = DiGraph.dag()
     G.show()
-    print(FN(G))
+    for FN in [topological_sort, topological_sort2]:
+        print(FN.__name__, FN(G))
     G = DiGraph.graph()
     G.show()
-    print(FN(G))
+    for FN in [topological_sort, topological_sort2]:
+        print(FN.__name__, FN(G))
