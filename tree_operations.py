@@ -87,7 +87,7 @@ def preorder(tree):
 
     stack = list()
     stack.append(tree)
-    while len(stack) is not 0:
+    while stack:
         node = stack.pop()
         output.append(node)
         if node.right:
@@ -172,7 +172,7 @@ def find_path_2(tree, data):
 
 if __name__ == "__main__":
     for FP in [find_path, find_path_2]:
-        print(FP.__name__)
+        print("====", FP.__name__)
         T = Tree.tree()
         print(T)
         print(3, FP(T, 3))
