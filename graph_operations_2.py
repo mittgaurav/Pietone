@@ -5,6 +5,7 @@ Created on Sun Jan  6 19:57:19 2019
 @author: gaurav
 """
 from graph_adj_list import DiGraph
+from graph_adj_list import Graph
 
 
 def has_cycle(graph):
@@ -17,7 +18,7 @@ def has_cycle(graph):
 
     visited = set()
 
-    def has_cycle_internal(i):
+    def has_cycle_internal(i, parent=None):
         """Cycles. This function is
         invoked for every node, for
         num of edges time. Thus the
@@ -28,20 +29,20 @@ def has_cycle(graph):
         is not already seen. Seen is
         accumulated globally & child
         is popped if got no cycle"""
+        visited.add(i)
         for child in graph[i]:
-            if child in seen:
+            if child not in visited:
+                if has_cycle_internal(child, i):
+                    return True
+            elif parent != child:
                 return True
-            if has_cycle_internal(child):
-                return True
-            seen.add(child)
+
         return False
 
     for node in graph:
-        seen = set()
         if node not in visited:
             if has_cycle_internal(node):
                 return True
-            visited.add(node)
     return False
 
 
@@ -122,3 +123,42 @@ if __name__ == "__main__":
     G.show()
     for FN in [topological_sort, topological_sort2]:
         print(FN.__name__, FN(G))
+
+
+def krushal(graph):
+    """krushal's spanning tree.
+    keep picking minimum edge as
+    long as it avoids a cycle"""
+    from priority_queue import MinHeap
+
+    res = Graph()
+    if not graph:
+        return res
+
+    def order(arr, parent, child):
+        """parent <= child in min heap"""
+        return arr[parent][2] <= arr[child][2]
+
+    heap = MinHeap()
+    heap.order = order
+
+    for i, j in graph.edges(weights=True).items():
+        heap.add((i[0], i[1], j))
+
+    while len(heap) > 0:
+        # - take the minimum edge
+        # - add it to result graph
+        # - remove iff we get cycle
+        val = heap.pop()
+        res.add_edge(val[0], val[1], val[2])
+        if has_cycle(res):
+            res.remove_edge(val[0], val[1])
+
+    return res
+
+
+if __name__ == "__main__":
+    print("====", krushal.__name__)
+    G = Graph.graphw()
+    G.show()
+    krushal(G).show()
