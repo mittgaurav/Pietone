@@ -90,16 +90,16 @@ class Heap:
         replace with least,
         and heapify; i.e.
         move it down"""
-        if not self.vals:
-            return None
-
-        ret = self.vals[0]
+        ret = self.peek()
 
         # replace with very small
-        self.vals[0] = self.vals.pop()
-
         # sink that very small to end
-        self._heapify()
+        if len(self.vals) == 1:  # only one element
+            self.vals.pop()
+        if len(self.vals) > 1:  # more than 1 elements
+            self.vals[0] = self.vals.pop()
+            self._heapify()
+
         return ret
 
     def peek(self):
@@ -186,3 +186,6 @@ if __name__ == "__main__":
     print("pop 3,", b)
     print(MinHeap.check(b.vals))
     print(MinHeap.check(a.vals))
+    b.pop()
+    b.pop()
+    print(b.pop())
