@@ -138,13 +138,13 @@ class Graph:
     def graphw(cls):
         """weighted graph"""
         graph = cls()
-        graph.add_edge(0, 1)
-        graph.add_edge(0, 4)
-        graph.add_edge(1, 2)
-        graph.add_edge(1, 3)
-        graph.add_edge(1, 4)
-        graph.add_edge(2, 3)
-        graph.add_edge(3, 4)
+        graph.add_edge(0, 1, 2)
+        graph.add_edge(0, 4, 5)
+        graph.add_edge(1, 2, 3)
+        graph.add_edge(1, 3, 5)
+        graph.add_edge(1, 4, 7)
+        graph.add_edge(2, 3, 5)
+        graph.add_edge(3, 4, 3)
         return graph
 
 
