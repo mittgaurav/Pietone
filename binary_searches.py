@@ -117,6 +117,12 @@ if __name__ == "__main__":
     print(binary_search_rotated_array(A, 0, len(A)))
     A = [5, 6, 7, 8, 9, 10, 1, 2, 3, 4]
     print(binary_search_rotated_array(A, 0, len(A)))
+    A = [5, 6, 7, 8, 9, 1, 2, 3, 4]
+    print(binary_search_rotated_array(A, 0, len(A)))
+    A = [5, 6, 7, 8, 1, 2, 3, 4]
+    print(binary_search_rotated_array(A, 0, len(A)))
+    A = [5, 6, 7, 1, 2, 3, 4]
+    print(binary_search_rotated_array(A, 0, len(A)))
 
 
 def search_infinite_array(arr, v):
@@ -129,13 +135,13 @@ def search_infinite_array(arr, v):
             return -1
         if r == l:
             return -1 if arr[l] != v else l
+
         m = (l + r) // 2
         if arr[m] < v:
             return search(m+1, r*2)
-        elif arr[m] == v:
+        if arr[m] == v:
             return m
-        else:
-            return search(l, m-1)
+        return search(l, m-1)
 
     return search(0, 1)
 
@@ -160,11 +166,10 @@ def infinite_array_less_than(arr, v):
         if r == l:
             return -1 if arr[l] >= v else l
         m = (l + r) // 2
-        if arr[m] < v:
-            index = search(m+1, r*2)
-            return m if index == -1 else index
-        elif arr[m] >= v:
+        if arr[m] >= v:
             return search(l, m-1)
+        index = search(m+1, r*2)
+        return m if index == -1 else index
 
     return search(0, 1)
 
