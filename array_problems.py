@@ -264,3 +264,25 @@ def first_missing_num_n(arr, start, end):
 print("====", first_missing_num_n.__name__)
 print(first_missing_num_n([0, 1, 3, 4, 5, 6, 8], 0, 6))
 print(first_missing_num_n([0, 1, 3, 4, 5], 0, 4))
+
+
+def get_products_of_all_except_index(int_list):
+    """don't use divide"""
+    product = [1] * len(int_list)
+
+    product_so_far = 1
+    for i in range(len(int_list)):
+        product[i] = product_so_far
+        product_so_far *= int_list[i]
+
+    product_so_far = 1
+    for i in range(len(int_list) - 1, -1, -1):
+        product[i] *= product_so_far
+        product_so_far *= int_list[i]
+
+    return product
+
+
+print("====", get_products_of_all_except_index.__name__)
+print(get_products_of_all_except_index([8, 2, 4, 3, 1, 5]))
+print(get_products_of_all_except_index([-7, -1, -4, -2]))
