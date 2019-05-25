@@ -266,3 +266,45 @@ def spiral_print(tree):
 print(spiral_print.__name__)
 print(T)
 spiral_print(T)
+print("===========================")
+# ==================================
+# ==================================
+
+
+def lca(A, x, y):
+    """least common ancestor"""
+    if not A:
+        return None
+    assert x != y
+
+    def inner(n):
+        if not n:
+            return (None, False)
+        val1, done1 = inner(n.left)
+        val2, done2 = inner(n.right)
+        if done1:
+            return val1, True
+        if done2:
+            return val2, True
+        if val1 and val2:
+            return n.data, True
+
+        if not val1 and not val2:
+            return (n.data, False) if (n.data == x or n.data == y) \
+                else (None, False)
+
+        val1 = val1 if val1 else val2
+        return (n.data, True) if (n.data == x or n.data == y) \
+            else (val1, False)
+
+    val, done = inner(A)
+    return val if done else None
+
+
+print("least common ancestor")
+T.right.data = 10
+print(T)
+print(lca(T, 2, 10))
+print(lca(T, 4, 2))
+print(lca(T, 4, 3))
+print(lca(T, 0, 1))
