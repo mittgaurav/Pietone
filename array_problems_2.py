@@ -57,3 +57,29 @@ array = [0] * 2 * 3
 print(place_i_spaced_ints(array, 3), array)
 array = [0] * 2 * 4
 print(place_i_spaced_ints(array, 4), array)
+
+
+def add_one(arr, j):
+    """add one to an int
+    represented by arr"""
+    if j < 0:
+        arr.insert(0, 1)
+        return
+
+    if arr[j] == 9:
+        arr[j] = 0
+        add_one(arr, j-1)
+    else:
+        arr[j] += 1
+
+
+print('====', add_one.__name__)
+arrays = [
+        [2, 3, 4, 1],
+        [9, 9, 9, 9]
+        ]
+
+for array in arrays:
+    print(array, end='->')
+    add_one(array, len(array) - 1)
+    print(array)
