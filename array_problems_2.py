@@ -76,7 +76,8 @@ def add_one(arr, j):
 print('====', add_one.__name__)
 arrays = [
         [2, 3, 4, 1],
-        [9, 9, 9, 9]
+        [9, 9, 9, 9],
+        [0]
         ]
 
 for array in arrays:
