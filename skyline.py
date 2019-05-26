@@ -98,20 +98,16 @@ def merge_intervals(intervals):
     if not intervals:
         return out
 
-    start = intervals[0][0]
-    end = intervals[0][1]
+    start, end = intervals[0]
 
-    for i in intervals[1:]:
-        new_start = i[0]
-        new_end = i[1]
+    for new_start, new_end in intervals[1:]:
         if new_start <= end:  # overlapping elements
             end = max(end, new_end)
         else:  # New is after end. There's gap between
             # current element end and next start; end
             # right now and collect this into result
             out.append((start, end))
-            start = new_start
-            end = new_end
+            start, end = new_start, new_end
 
     out.append((start, end))
 
@@ -119,8 +115,46 @@ def merge_intervals(intervals):
 
 
 print("====", merge_intervals.__name__)
-print(merge_intervals([[1, 3], [2, 6], [8, 10], [15, 18]]))
+print(merge_intervals([[1, 3], [2, 6], [4, 5], [8, 10], [15, 18]]))
 print(merge_intervals([[1, 4], [4, 5]]))
+
+
+def intersection_intervals(intervals):
+    """more than one running"""
+    out = []
+    if not intervals:
+        return out
+
+    prev_start, prev_end = 0, 0
+    for start, end in intervals:
+        # we have taken care of this later
+        # by considering all four cases.
+        start = max(start, prev_start)
+        if end < start:
+            # for shorter interval after
+            continue
+        if start < prev_end:
+            if end < prev_end:
+                out.append((start, end))
+                prev_start = end
+            else:
+                out.append((start, prev_end))
+                prev_start = prev_end
+                prev_end = end
+        else:
+            prev_start, prev_end = start, end
+
+    # we may have some overlapping intervals.
+    out = merge_intervals(out)
+    return out
+
+
+print("====", intersection_intervals.__name__)
+print(intersection_intervals([[1, 3], [2, 6], [4, 5], [8, 10]]))
+print(intersection_intervals([[1, 7], [2, 6], [4, 5], [8, 10]]))
+print(intersection_intervals([[1, 7], [2, 6], [6, 7], [8, 10]]))
+print(intersection_intervals([[1, 7], [2, 6], [5, 6], [6, 8]]))
+print(intersection_intervals([[1, 4], [4, 5]]))
 
 
 def main(dict_bank_list_of_times):
