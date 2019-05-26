@@ -164,14 +164,13 @@ def total_time(arr):
 
     arr.sort(key=lambda x: x[0])
 
-    prev_end = 0
+    max_end = 0
     time = 0
-    for i in arr:
-        if i[0] < prev_end:
-            time += max(0, i[1] - prev_end)
-        else:
-            time += i[1] - i[0]
-        prev_end = max(prev_end, i[1])
+    for start, end in arr:
+        assert start <= end
+        start = max(start, max_end)  # start within max_end?
+        time += max(0, end - start)  # end > start but is it > max_end
+        max_end = max(max_end, end)  # for the next
 
     return time
 
