@@ -119,7 +119,7 @@ print(merge_intervals([[1, 3], [2, 6], [4, 5], [8, 10], [15, 18]]))
 print(merge_intervals([[1, 4], [4, 5]]))
 
 
-def intersection_intervals(intervals):
+def overlapping_intervals(intervals):
     """more than one running"""
     out = []
     if not intervals:
@@ -149,12 +149,34 @@ def intersection_intervals(intervals):
     return out
 
 
+print("====", overlapping_intervals.__name__)
+print(overlapping_intervals([[1, 3], [2, 6], [4, 5], [8, 10]]))
+print(overlapping_intervals([[1, 7], [2, 6], [4, 5], [8, 10]]))
+print(overlapping_intervals([[1, 7], [2, 6], [6, 7], [8, 10]]))
+print(overlapping_intervals([[1, 7], [2, 6], [5, 6], [6, 8]]))
+print(overlapping_intervals([[1, 6], [2, 8], [3, 10], [5, 8]]))
+print(overlapping_intervals([[1, 4], [4, 5]]))
+
+
+def intersection_intervals(intervals):
+    """simple: intersection of all"""
+    out = []
+    max_start = min([_[0] for _ in intervals])
+    min_end = max([_[1] for _ in intervals])
+
+    for start, end in intervals:
+        max_start = max(max_start, start)
+        min_end = min(min_end, end)
+
+    if min_end > max_start:
+        out.append((max_start, min_end))
+
+    return out
+
+
 print("====", intersection_intervals.__name__)
 print(intersection_intervals([[1, 3], [2, 6], [4, 5], [8, 10]]))
-print(intersection_intervals([[1, 7], [2, 6], [4, 5], [8, 10]]))
-print(intersection_intervals([[1, 7], [2, 6], [6, 7], [8, 10]]))
-print(intersection_intervals([[1, 7], [2, 6], [5, 6], [6, 8]]))
-print(intersection_intervals([[1, 4], [4, 5]]))
+print(intersection_intervals([[1, 6], [2, 8], [3, 10], [5, 8]]))
 
 
 def main(dict_bank_list_of_times):
