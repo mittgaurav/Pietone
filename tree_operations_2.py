@@ -278,6 +278,11 @@ def lca(A, x, y):
     assert x != y
 
     def inner(n):
+        """return two things: the val found
+        and whether we are done finding"""
+        # if val is set and done is True: parent found
+        # if val is set and done is not: child found
+        # if val is not: nothing in there
         if not n:
             return (None, False)
         val1, done1 = inner(n.left)
