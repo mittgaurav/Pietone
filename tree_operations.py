@@ -437,3 +437,28 @@ if __name__ == "__main__":
     print(T)
     print(maximum_path_sum(T))
     print("=======================")
+
+
+def move_coins(tree):
+    """given total n coins among
+    n nodes, how many moves will
+    be done to have one coin on
+    each node"""
+    if not tree:
+        return 0, 0
+    left_discrepancy, left_steps = move_coins(tree.left)
+    right_discrepancy, right_steps = move_coins(tree.right)
+
+    # discrepancy is the difference
+    # that this node gives or takes
+    # from its parent
+    discrepancy = left_discrepancy + right_discrepancy + tree.data - 1
+    steps = abs(discrepancy) + left_steps + right_steps
+    return discrepancy, steps
+
+
+if __name__ == "__main__":
+    print(move_coins.__name__)
+    T = Tree(0, Tree(1, Tree(3)), Tree(1, None, Tree(0)))
+    print(T)
+    print(move_coins(T))
