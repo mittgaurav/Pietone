@@ -33,6 +33,34 @@ print(string_in_order('abc', 'cabc'))
 print(string_in_order('abc', 'xadb'))
 
 
+def put_string_in_order(order, string):
+    """given order, reaarange
+    string in the order. Can
+    assume that each char in
+    string exists in order"""
+    if not string:
+        return string
+    if not order:
+        return string
+
+    # assert no duplicates
+    assert len(set(order)) == len(order)
+
+    # map location in order
+    order_map = {}
+    for i in range(len(order)):
+        order_map[order[i]] = i
+
+    # sort string by location in order
+    return "".join(sorted(string, key=lambda x: order_map[x]))
+
+
+print("====", put_string_in_order.__name__)
+print(put_string_in_order('abc', 'aaa'))
+print(put_string_in_order('abc', 'cabc'))
+print(put_string_in_order("bxyzca", "abcabcabc"))
+
+
 def place_i_spaced_ints(arr, n):
     """place pair of n ints spaced
     at ith distance from each other"""
@@ -53,10 +81,9 @@ def place_i_spaced_ints(arr, n):
 
 
 print("====", place_i_spaced_ints.__name__)
-array = [0] * 2 * 3
-print(place_i_spaced_ints(array, 3), array)
-array = [0] * 2 * 4
-print(place_i_spaced_ints(array, 4), array)
+for N in range(10):
+    array = [0] * 2 * N
+    print(N, place_i_spaced_ints(array, N), array)
 
 
 def add_one(arr, j):
