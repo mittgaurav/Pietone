@@ -127,13 +127,13 @@ def find_path(tree, data):
     while stack:
         node = stack.pop()
         output.append(node)
-        if node == data or node.data == data:
+        if data in (node, node.data):
             return output
         visited[node] = 0
 
         # To remove useless nodes and
         # parents with such children.
-        while len(output) > 0:
+        while output:
             # if the node is not data
             # & has no child, remove.
             # if the node is not data
@@ -158,7 +158,7 @@ def find_path_2(tree, data):
     if tree is None or data is None:
         return list()
 
-    if tree == data or tree.data == data:
+    if data in (tree, tree.data):
         return [tree]
     path = find_path_2(tree.left, data)
     if path:
@@ -170,27 +170,57 @@ def find_path_2(tree, data):
     return list()
 
 
+def find_path_3_internal(tree, data, curr_path):
+    """yet another find path"""
+    if tree is None or data is None:
+        return False
+
+    curr_path.append(tree)
+    if data in (tree, tree.data):
+        return True
+
+    if find_path_3_internal(tree.left, data, curr_path):
+        return True
+    if find_path_3_internal(tree.right, data, curr_path):
+        return True
+    curr_path.pop()
+
+    return False
+
+
+def find_path_3(tree, data):
+    """yet another find path"""
+    curr_path = []
+    find_path_3_internal(tree, data, curr_path)
+    return curr_path
+
+
 if __name__ == "__main__":
-    for FP in [find_path, find_path_2]:
-        print("====", FP.__name__)
-        T = Tree.tree()
-        print(T)
+    print("==== find path")
+    T = Tree.tree()
+    print(T)
+    for FP in [find_path, find_path_2, find_path_3]:
+        print("==", FP.__name__)
         print(3, FP(T, 3))
         print(7, FP(T, 7))
         print(0, FP(T, 0))
         print(6, FP(T, T.right.left))
         print(6, FP(T, T.right))
 
-        T = Tree.tree2()
-        print(T)
+    T = Tree.tree2()
+    print(T)
+    for FP in [find_path, find_path_2, find_path_3]:
+        print("==", FP.__name__)
         print(3, FP(T, 3))
         print(7, FP(T, 7))
         print(0, FP(T, 0))
         print(6, FP(T, T.right.left))
         print(5, FP(T, T.right))
 
-        T.right.right = Tree(9, Tree(8, Tree(10)))
-        print(T)
+    T.right.right = Tree(9, Tree(8, Tree(10)))
+    print(T)
+    for FP in [find_path, find_path_2, find_path_3]:
+        print("==", FP.__name__)
         print(1, FP(T, 1))
         print('*', FP(T, '*'))
         print(9, FP(T, 9))
@@ -261,7 +291,7 @@ def num_elems_in_range(tree, i, j):
         return (1 +
                 num_elems_in_range(tree.left, i, j) +
                 num_elems_in_range(tree.right, i, j))
-    elif tree.data < i:
+    if tree.data < i:
         return num_elems_in_range(tree.right, i, j)
     # tree.data > j:
     return num_elems_in_range(tree.left, i, j)
@@ -310,23 +340,100 @@ if __name__ == "__main__":
 # ==================================
 
 
-def has_path_with_sum(tree, val):
-    """whether tree have a path
-    which sums to given val?"""
+def has_path_from_root_with_sum(tree, val):
+    """whether tree has a path
+    which sums to given val.
+    Returns path from root"""
     if not tree:
         # if ask is 0, we are good
         return val == 0
 
     val -= tree.data
-    return (has_path_with_sum(tree.left, val) or
-            has_path_with_sum(tree.right, val))
+    return (has_path_from_root_with_sum(tree.left, val) or
+            has_path_from_root_with_sum(tree.right, val))
 
 
 if __name__ == "__main__":
-    print(has_path_with_sum.__name__)
+    print(has_path_from_root_with_sum.__name__)
     T = Tree.tree()
     print(T)
-    print(10, has_path_with_sum(T, 10))
-    print(13, has_path_with_sum(T, 13))
-    print(7, has_path_with_sum(T, 7))
+    print(10, has_path_from_root_with_sum(T, 10))
+    print(13, has_path_from_root_with_sum(T, 13))
+    print(7, has_path_from_root_with_sum(T, 7))
+    print(9, has_path_from_root_with_sum(T, 9))
+    print(5, has_path_from_root_with_sum(T, 5))
+    print("=======================")
+
+
+def downward_paths_with_sum(tree, val, paths, curr_path):
+    """[[has_path_from_root_with_sum]]
+    with any node as root node"""
+    if not tree:
+        return
+
+    # go top to down and accumulate
+    # current path. Then, check for
+    # all possible paths whether we
+    # achieved the required sum.
+    curr_path.append(tree.data)
+
+    path_sum = 0
+    for i in range(len(curr_path)-1, -1, -1):
+        path_sum += curr_path[i]
+        if path_sum == val:
+            paths.append(curr_path[i:])
+
+    downward_paths_with_sum(tree.left, val, paths, curr_path)
+    downward_paths_with_sum(tree.right, val, paths, curr_path)
+
+    curr_path.pop()
+
+
+if __name__ == "__main__":
+    print(downward_paths_with_sum.__name__)
+    T = Tree(1, Tree(3, Tree(2), Tree(1, None, Tree(1))),
+             Tree(-1, Tree(4, Tree(1), Tree(2)), Tree(5, None, Tree(6))))
+    print(T)
+
+    paths = []
+    downward_paths_with_sum(T, 5, paths, [])
+    print(paths)
+    print("=======================")
+
+
+def maximum_path_sum(tree):
+    """find the maximum sum of
+    a path in a tree"""
+    def inner(tree, max_max=0):
+        if not tree:
+            return 0, 0
+
+        left, max1 = inner(tree.left, max_max)
+        right, max2 = inner(tree.right, max_max)
+
+        # at each node, two things to consider
+        # what should be sent up, and
+        # what is the overall maximum
+        max_send_up = max(tree.data, left + tree.data, right + tree.data)
+        max_max = max(max_max, max1, max2,
+                      max_send_up, left + tree.data + right)
+
+        return max_send_up, max_max
+
+    return inner(tree)[1]
+
+
+if __name__ == "__main__":
+    print(maximum_path_sum.__name__)
+    T = Tree(1, Tree(3, Tree(2), Tree(1, None, Tree(1))),
+             Tree(-1, Tree(4, Tree(1), Tree(2)), Tree(5, None, Tree(6))))
+    print(T)
+
+    print(maximum_path_sum(T))
+    print(maximum_path_sum(T.right))
+    print(maximum_path_sum(T.left))
+
+    T = Tree(-3, Tree(-2), Tree(-1, None, Tree(-1)))
+    print(T)
+    print(maximum_path_sum(T))
     print("=======================")
