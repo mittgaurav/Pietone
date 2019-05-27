@@ -12,17 +12,9 @@ def max_subarray_sum(arr):
     max_sum = 0
     loc_sum = 0
     for i in arr:
-        loc_sum += i
-
-        # we can always
-        # beat negative
-        loc_sum = max(loc_sum, 0)
-
-        # one line to do that
-        # and fix for all -ve
+        # fix for all -ve
         # to have length >= 1
-        # loc_sum = max(i, loc_sum + i)
-
+        loc_sum = max(i, loc_sum + i)
         max_sum = max(max_sum, loc_sum)
 
     print(max_sum)
