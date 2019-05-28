@@ -14,7 +14,7 @@ area = [[0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0]]
 
-done = [[0 for _ in range(len(area[0]))] for _ in range(len(area))]
+visited = [[0 for _ in range(len(area[0]))] for _ in range(len(area))]
 
 
 def count(i, j):
@@ -23,10 +23,10 @@ def count(i, j):
     if i < 0 or i >= len(area) or j < 0 or j >= len(area[i]):
         return 0
 
-    if done[i][j]:  # already
+    if visited[i][j]:  # already
         return 0
 
-    done[i][j] = True
+    visited[i][j] = True
     if not area[i][j]:  # zero
         return 0
 
@@ -38,5 +38,43 @@ res = 0
 for i in range(len(area)):
     for j in range(len(area[i])):
         res = max(res, count(i, j))
+
+print(res)
+
+
+area = [[0, 0, 1, 2, 2, 0, 3],
+        [0, 1, 1, 2, 3, 3, 3],
+        [2, 2, 2, 2, 4, 4, 3],
+        [0, 2, 1, 2, 4, 2, 1],
+        [4, 0, 1, 1, 3, 3, 3],
+        [2, 0, 0, 2, 3, 0, 3],
+        [1, 0, 1, 1, 3, 0, 3],
+        [1, 1, 0, 2, 3, 3, 3]]
+
+visited = [[0 for _ in range(len(area[0]))] for _ in range(len(area))]
+
+
+def count_nation(i, j, val):
+    """for multiple options,
+    give the largest nation"""
+    if i < 0 or i >= len(area) or j < 0 or j >= len(area[i]):
+        return 0
+
+    if visited[i][j]:  # already
+        return 0
+
+    # can add to current nation?
+    if area[i][j] != val:
+        return 0
+
+    visited[i][j] = True
+    return (1 + count_nation(i, j+1, val) + count_nation(i, j-1, val) +
+            count_nation(i+1, j, val) + count_nation(i-1, j, val))
+
+
+res = 0
+for i in range(len(area)):
+    for j in range(len(area[i])):
+        res = max(res, count_nation(i, j, area[i][j]))
 
 print(res)
