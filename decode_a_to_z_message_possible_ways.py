@@ -13,6 +13,7 @@ for char in "abcdefghijklmnopqrstuvwxyz":
 
 
 def decode_message(n):
+    """some weird decode message"""
     if n == 0:
         return [""]
 
