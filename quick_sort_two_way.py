@@ -31,7 +31,7 @@ def two_partition(arr):
             arr[i] = arr[H]
             arr[H] = tempor
             H -= 1
-    # put pivot in its place (H)
+    # put pivot in its place (H/ i-1)
     arr[0] = arr[H]
     arr[H] = pivot
     return H
@@ -53,3 +53,5 @@ print(quicksort([0]))
 print(quicksort([0, 0, 0, 0]))
 print(quicksort([-8, 0, 1, 2, 5, 10, 12, 23]))
 print(quicksort([23, 12, 10, 5, 2, 1, 0, -8]))
+print(quicksort([23, 12]))
+print(quicksort([3, 12]))
