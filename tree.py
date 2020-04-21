@@ -36,7 +36,7 @@ class Tree():
     def str_node_internal(cls, nodes, level, levels):
         """internal of prints"""
         ret = ''
-        if len([x for x in nodes if x is not None]) is 0:
+        if len([x for x in nodes if x is not None]) == 0:
             return ret
 
         floor = levels - level
