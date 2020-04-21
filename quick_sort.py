@@ -41,16 +41,12 @@ def partition(arr):
     while i <= H:
         if arr[i] < pivot:
             # swap L with i
-            tempor = arr[i]
-            arr[i] = arr[L]
-            arr[L] = tempor
+            arr[i], arr[L] = arr[L], arr[i]
             i += 1
             L += 1
         elif arr[i] > pivot:
             # swap H with i
-            tempor = arr[i]
-            arr[i] = arr[H]
-            arr[H] = tempor
+            arr[i], arr[H] = arr[H], arr[i]
             H -= 1
         else:  # arr[i] == pivot:
             i += 1
@@ -60,7 +56,7 @@ def partition(arr):
 
 def quicksort(arr):
     """sort given array"""
-    if len(arr) == 0 or len(arr) == 1:
+    if len(arr) <= 1:
         return arr
 
     l, h = partition(arr)
@@ -68,11 +64,51 @@ def quicksort(arr):
     return quicksort(arr[:l]) + arr[l:h] + quicksort(arr[h:])
 
 
+def partition2(arr):
+    """returns the location of pivot
+    hence we are breaking in two."""
+    i = 0
+    L = 1
+    H = len(arr) - 1
+
+    while L <= H:
+        if arr[i] > arr[L]:
+            # pivot should go forward
+            arr[i], arr[L] = arr[L], arr[i]
+            i += 1
+            L += 1
+        else:
+            # put the maximum value in H,
+            # and retry in next iteration
+            if arr[H] < arr[L]:
+                arr[H], arr[L] = arr[L], arr[H]
+            H -= 1
+
+    return i
+
+
+def quicksort2(arr):
+    """there is another way"""
+    if not arr or len(arr) <= 1:
+        return arr
+
+    L = partition2(arr)
+
+    return quicksort2(arr[:L+1]) + quicksort2(arr[L+1:])
+
+
 if __name__ == "__main__":
     print(quicksort([]))
+    print(quicksort2([]))
     print(quicksort([3, 2, 1, 4, 2, -6]))
+    print(quicksort2([3, 2, 1, 4, 2, -6]))
     print(quicksort([0, 10, 2, 23, 5, -8, 1, 12]))
+    print(quicksort2([0, 10, 2, 23, 5, -8, 1, 12]))
     print(quicksort([0]))
+    print(quicksort2([0]))
     print(quicksort([0, 0, 0, 0]))
+    print(quicksort2([0, 0, 0, 0]))
     print(quicksort([-8, 0, 1, 2, 5, 10, 12, 23]))
+    print(quicksort2([-8, 0, 1, 2, 5, 10, 12, 23]))
     print(quicksort([23, 12, 10, 5, 2, 1, 0, -8]))
+    print(quicksort2([23, 12, 10, 5, 2, 1, 0, -8]))
