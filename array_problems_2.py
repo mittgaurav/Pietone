@@ -111,3 +111,46 @@ for array in arrays:
     print(array, end='->')
     add_one(array, len(array) - 1)
     print(array)
+
+
+def i_j_maximum_index(arr):
+    """Given an array A[] of N positive
+    integers. Find max of j-i such that
+    A[i] <= A[j]."""
+    mines = []
+    minim = 9999
+    for i in arr:
+        minim = min(minim, i)
+        mines.append(minim)
+
+    maxes = []
+    maxim = -9999
+    arr.reverse()
+    for i in arr:
+        maxim = max(maxim, i)
+        maxes.insert(0, maxim)
+
+    print(mines)
+    print(maxes)
+    i = j = 0
+    val = -1
+    while i < len(arr) and j < len(arr):
+        if mines[i] > maxes[j]:
+            i += 1
+        else:
+            val = max(val, j - i)
+            j += 1
+
+    return val
+
+
+arrays = [
+        [9, 2, 3, 4, 5, 6, 7, 8, 18, 0],
+        [7, 3, 2, 1, 8, 0, 5, 1, 12, 5],
+        [7, 3, 2, 1, 8, 0, 5, 1, 2, 5],
+        ]
+
+print('====', i_j_maximum_index.__name__)
+for array in arrays:
+    print(array)
+    print(i_j_maximum_index(array))
