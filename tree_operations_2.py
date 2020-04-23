@@ -313,3 +313,46 @@ print(lca(T, 2, 10))
 print(lca(T, 4, 2))
 print(lca(T, 4, 3))
 print(lca(T, 0, 1))
+print("===========================")
+# ==================================
+# ==================================
+
+
+def dfs(node):
+    """depth"""
+    if not node:
+        return
+
+    print(node.data, end=' ')
+    dfs(node.left)
+    # print(node.data)
+    dfs(node.right)
+    # print(node.data)
+
+
+print(T)
+print('depth_first_search')
+dfs(T)
+print()
+
+queue = []
+
+
+def bfs(node):
+    """breadth"""
+    if not node:
+        return
+
+    queue.append(node)
+
+    while queue:
+        node = queue.pop(0)
+        print(node.data, end=' ')
+        if node.left:
+            queue.append(node.left)
+        if node.right:
+            queue.append(node.right)
+
+
+print('breadth_first_search')
+bfs(T)
