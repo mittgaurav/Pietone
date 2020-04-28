@@ -244,6 +244,10 @@ def spiral_print(tree):
     flag_lr = True
 
     while arr:
+        # we figure out how many elements are
+        # at this level. Then, we process all
+        # of them. Hence, next time around we
+        # will definitely have the next level
         nums = len(arr)
         current = 0
         while current < nums:
@@ -356,3 +360,45 @@ def bfs(node):
 
 print('breadth_first_search')
 bfs(T)
+print()
+
+
+queue = []
+
+
+def spiral_print_bfs(node):
+    """breadth"""
+    if not node:
+        return
+
+    queue.append(node)
+
+    forward = True
+
+    while queue:
+        # traverse as many times
+        # as this level is there
+        length_this_level = len(queue)
+        i = 0
+        while i < length_this_level:
+            node = queue.pop(0)
+            i += 1
+            print(node.data, end=' ')
+
+            first = node.left if forward else node.right
+            secon = node.right if forward else node.left
+            if first:
+                queue.append(first)
+            if secon:
+                queue.append(secon)
+
+        # we need reversing since
+        # after adding in reverse
+        # order we need to print.
+        forward = not forward
+        queue.reverse()
+
+
+print('spiral_print_bfs')
+spiral_print_bfs(T)
+print()
