@@ -34,9 +34,7 @@ class Heap:
 
     def _swap(self, i, j):
         """swap"""
-        temp = self.vals[i]
-        self.vals[i] = self.vals[j]
-        self.vals[j] = temp
+        self.vals[i], self.vals[j] = self.vals[j], self.vals[i]
 
     def __str__(self):
         return str(self.vals)
@@ -53,18 +51,20 @@ class Heap:
         if i <= 0:
             return
 
+        # if it and its parent doesn't
+        # follow the order, swap them.
         par = int((i - 1)/2)  # parent
         if self.order(self.vals, par, i):
             return  # has heap property
 
         # Swap as parent less than elem
         self._swap(i, par)
+        # Repeat same activity with par
         self.swim_up(par)
 
     def _heapify(self, i=0):
-        """lowest number on
-        top is brought down
-        to its right loc"""
+        """bring the num at the
+        top to its right loc"""
         if i >= int(len(self)/2):
             return
 
@@ -74,29 +74,32 @@ class Heap:
         # 3 way comparison to
         # get the m**imum. We
         # swap i with m**imum
-        largest = i
+        topper = i
         if L < len(self) and not self.order(self.vals, i, L):
-            largest = L
-        if r < len(self) and not self.order(self.vals, largest, r):
-            largest = r
-        if largest == i:
+            topper = L
+        if r < len(self) and not self.order(self.vals, topper, r):
+            topper = r
+        if topper == i:
             return  # has heap property
 
-        self._swap(largest, i)
-        self._heapify(largest)
+        self._swap(topper, i)
+        self._heapify(topper)
 
     def pop(self):
-        """take highest num,
-        replace with least,
+        """take top elem,
+        replace with end,
         and heapify; i.e.
-        move it down"""
+        move it down, to
+        its right place.
+        """
+        # take top element
         ret = self.peek()
 
-        # replace with very small
-        # sink that very small to end
         if len(self.vals) == 1:  # only one element
             self.vals.pop()
         if len(self.vals) > 1:  # more than 1 elements
+            # replace top most
+            # pos with last.
             self.vals[0] = self.vals.pop()
             self._heapify()
 
@@ -152,12 +155,12 @@ if __name__ == "__main__":
     print("add 4,", a.add(4))
     print("add 5,", a.add(5))
     print("add 3,", a.add(3))
-    print(MaxHeap.check(a.vals))
+    print("maxheap check:", MaxHeap.check(a.vals))
     a.pop()
     print("pop 5,", a)
     print("add 7,", a.add(7))
     print("add 0,", a.add(0))
-    print(MaxHeap.check(a.vals))
+    print("maxheap check:", MaxHeap.check(a.vals))
     a.pop()
     print("pop 7,", a)
     a.pop()
@@ -170,12 +173,12 @@ if __name__ == "__main__":
     print("add 1,", a.add(1))
     print(a.peek())
     print(a)
-    print(MaxHeap.check(a.vals))
+    print("maxheap check:", MaxHeap.check(a.vals))
     a.pop()
     print("pop 8,", a)
     a.pop()
     print("pop 6,", a)
-    print(MaxHeap.check(a.vals))
+    print("maxheap check:", MaxHeap.check(a.vals))
     b = MinHeap()
     print("add 4,", b.add(4))
     print("add 5,", b.add(5))
@@ -184,8 +187,8 @@ if __name__ == "__main__":
     print(b)
     b.pop()
     print("pop 3,", b)
-    print(MinHeap.check(b.vals))
-    print(MinHeap.check(a.vals))
+    print("minheap check:", MinHeap.check(b.vals))
+    print("minheap check:", MinHeap.check(a.vals))
     b.pop()
     b.pop()
     print(b.pop())
