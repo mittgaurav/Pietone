@@ -99,7 +99,7 @@ def _inner_check(board, full=False):
     return True
 
 
-print(_inner_check(board))
+print(_inner_check(board, True))
 
 
 def nqueen_solve(n):
@@ -149,4 +149,4 @@ def nqueen_solve(n):
 
 board = nqueen_solve(8)
 assert [print(_) for _ in board]
-print(_inner_check(board))
+print(_inner_check(board, True))
