@@ -150,3 +150,26 @@ def nqueen_solve(n):
 board = nqueen_solve(8)
 assert [print(_) for _ in board]
 print(_inner_check(board, True))
+
+
+def solve_nqueen(n):
+    """www.youtube.com/watch?v=u6viVC1fJ9g"""
+    col = [True for _ in range(n)]
+    d1 = [True for _ in range((2*n) - 1)]
+    d2 = [True for _ in range((2*n) - 1)]
+
+    def solve(r, res=0):
+        if r == n:
+            return res+1
+
+        for c in range(n):
+            if col[c] and d1[r-c+n-1] and d2[r+c]:
+                col[c] = d1[r-c+n-1] = d2[r+c] = False
+                res = solve(r+1, res)
+                col[c] = d1[r-c+n-1] = d2[r+c] = True
+        return res
+
+    return solve(0)
+
+
+print(solve_nqueen(8))
