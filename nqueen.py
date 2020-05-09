@@ -172,6 +172,74 @@ def solve_nqueen(n):
     return solve(0)
 
 
-print(solve_nqueen(8))
 print(solve_nqueen(4))
+print(solve_nqueen(5))
+print(solve_nqueen(8))
 print(solve_nqueen(12))
+
+
+def solve_nqueen_2(n):
+    """choice - constraint - goal
+    * Choice for each cell - 1/0
+    * Constraint _inner_check
+    * Goal - if reached end - _inner_check
+    """
+    board = [[0 for _ in range(n)] for _ in range(n)]
+
+    def solve(cell, res=0):
+        # goal
+        if cell >= (n*n):
+            return res+1 if _inner_check(board, True) else res
+
+        r, c = cell // n, cell % n
+
+        for val in (1, 0):
+            # choice
+            board[r][c] = val
+
+            # constraint
+            if _inner_check(board):
+                res = solve(cell+1, res)
+
+        board[r][c] = 0
+        return res
+
+    return solve(0)
+
+
+print(solve_nqueen_2(4))
+print(solve_nqueen_2(5))
+# print(solve_nqueen_2(8))
+
+
+def solve_nqueen_2(n):
+    """choice - constraint - goal
+    * Choice for each row - where to put 1
+    * Constraint _inner_check
+    * Goal - if reached end - _inner_check
+    """
+    board = [[0 for _ in range(n)] for _ in range(n)]
+
+    def solve(r, res=0):
+        # goal
+        if r >= n:
+            return res+1 if _inner_check(board, True) else res
+
+        for c in range(n):
+            # choice
+            board[r][c] = 1
+
+            # constraint
+            if _inner_check(board):
+                res = solve(r+1, res)
+
+            board[r][c] = 0
+
+        return res
+
+    return solve(0)
+
+
+print(solve_nqueen_2(4))
+print(solve_nqueen_2(5))
+print(solve_nqueen_2(8))
