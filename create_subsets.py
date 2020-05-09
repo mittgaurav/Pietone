@@ -8,7 +8,7 @@ subsets and permutations: permutations
 are special set of subsets that've all
 elements of initial set to choose from
 """
-
+import copy
 
 def create_subsets(arr):
     """create subsets
@@ -94,8 +94,41 @@ def permutations(arr):
 
 
 print(permutations.__name__)
-print(permutations([1, 2, 3]))
-print(len(permutations([1, 2, 3, 4])))
-print(len(permutations([1, 2, 3, 4, 5])))
-print(len(permutations([1, 2, 3, 4, 5, 6, 7])))
-print(len(permutations([1, 2, 3, 4, 5, 6, 7, 8])))
+print(3, permutations([1, 2, 3]))
+print(4, len(permutations([1, 2, 3, 4])))
+print(5, len(permutations([1, 2, 3, 4, 5])))
+print(7, len(permutations([1, 2, 3, 4, 5, 6, 7])))
+print(8, len(permutations([1, 2, 3, 4, 5, 6, 7, 8])))
+
+
+def permute(arr):
+    """permute using backtracking"""
+    total = []
+
+    def _solve(arr, res):
+        val = copy.deepcopy(res)
+        if not arr:
+            # goal
+            total.append(val)
+            return
+
+        for i in arr:
+            # choose
+            val.append(i)
+
+            # constraint
+            #- recurse
+            _solve([x for x in arr if x != i], val)
+
+            #- unchoose
+            val.pop()
+
+    _solve(arr, [])
+    return total
+
+print(permute.__name__)
+print(3, permute([1, 2, 3]))
+print(4, len(permute([1, 2, 3, 4])))
+print(5, len(permute([1, 2, 3, 4, 5])))
+print(7, len(permute([1, 2, 3, 4, 5, 6, 7])))
+print(8, len(permute([1, 2, 3, 4, 5, 6, 7, 8])))
