@@ -173,3 +173,5 @@ def solve_nqueen(n):
 
 
 print(solve_nqueen(8))
+print(solve_nqueen(4))
+print(solve_nqueen(12))
