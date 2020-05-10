@@ -58,6 +58,7 @@ def solve_sudoku(board):
     def _solve(cell):
         """choose - constraint - goal"""
         if cell >= N * N:  # goal
+            print('solution')
             [print(_) for _ in board]
             return True if _check(board, True) else False
 
@@ -81,7 +82,6 @@ def solve_sudoku(board):
 
 
 [print(_) for _ in board]
-print('solution')
 solve_sudoku(board)
 
 board = [
@@ -96,3 +96,16 @@ board = [
          [0, 0, 0, 0, 8, 0, 0, 7, 9]
 ]
 solve_sudoku(board)
+
+grid = []
+grid.append([3, 0, 6, 5, 0, 8, 4, 0, 0])
+grid.append([5, 2, 0, 0, 0, 0, 0, 0, 0])
+grid.append([0, 8, 7, 0, 0, 0, 0, 3, 1])
+grid.append([0, 0, 3, 0, 1, 0, 0, 8, 0])
+grid.append([9, 0, 0, 8, 6, 3, 0, 0, 5])
+grid.append([0, 5, 0, 0, 9, 0, 6, 0, 0])
+grid.append([1, 3, 0, 0, 0, 0, 2, 5, 0])
+grid.append([0, 0, 0, 0, 0, 0, 0, 7, 4])
+grid.append([0, 0, 5, 2, 0, 6, 3, 0, 0])
+
+solve_sudoku(grid)
