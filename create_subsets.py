@@ -10,6 +10,7 @@ elements of initial set to choose from
 """
 import copy
 
+
 def create_subsets(arr):
     """create subsets
     of input array"""
@@ -117,14 +118,15 @@ def permute(arr):
             val.append(i)
 
             # constraint
-            #- recurse
+            # - recurse
             _solve([x for x in arr if x != i], val)
 
-            #- unchoose
+            # - unchoose
             val.pop()
 
     _solve(arr, [])
     return total
+
 
 print(permute.__name__)
 print(3, permute([1, 2, 3]))
