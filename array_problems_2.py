@@ -200,3 +200,35 @@ dep = [910, 1200, 1120, 1130, 1900, 2000]
 print(parallel_platforms(arr, dep))
 dep = [910, 1200, 1120, 1100, 1900, 2000]
 print(parallel_platforms(arr, dep))
+
+
+def minesweeper(arr):
+    """given mines in a field,
+    draw the minesweeper map"""
+
+    def _g(i, j):
+        try:
+            return 1 if arr[i][j] == '*' else 0
+        except IndexError:
+            return 0
+
+    for i in range(len(arr)):
+        for j in range(len(arr[0])):
+            if arr[i][j] != '*':
+                arr[i][j] = str(_g(i-1, j) + _g(i, j-1) + _g(i+1, j)
+                                + _g(i, j+1) + _g(i-1, j-1) + _g(i+1, j+1)
+                                + _g(i-1, j+1) + _g(i+1, j-1))
+
+    return arr
+
+
+print('====', minesweeper.__name__)
+arr = [
+       ['*', '.', '.', '.'],
+       ['.', '.', '.', '.'],
+       ['.', '*', '.', '.'],
+       ['.', '.', '.', '.'],
+]
+assert [print(_) for _ in arr]
+arr = minesweeper(arr)
+assert [print(_) for _ in arr]
