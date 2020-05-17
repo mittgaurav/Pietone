@@ -158,3 +158,45 @@ print('====', i_j_maximum_index.__name__)
 for array in arrays:
     print(array)
     print(i_j_maximum_index(array))
+
+
+def parallel_platforms(arr, dep):
+    """given arrival and departure times
+    of trains; how many platforms should
+    be there to process them all"""
+    arr.sort()
+    dep.sort()
+
+    i = 0
+    j = 0
+    maxi = 0
+    val = 0
+    while i < len(arr):
+        if arr[i] < dep[j]:
+            # another arrival before departure
+            val += 1
+            i += 1
+        elif arr[i] == dep[j]:
+            # departure along with arrival. We
+            # don't need an extra platform.
+            i += 1
+        elif arr[i] > dep[j]:
+            # departure happened - see how many
+            # platforms were needed for this.
+            maxi = max(maxi, val)
+            j += 1
+            val -= 1
+
+    # to capture departure right after last arrival
+    # which potentially has the maximum platforms
+    maxi = max(maxi, val)
+
+    return maxi
+
+
+print("====", parallel_platforms.__name__)
+arr = [900, 940, 950, 1100, 1500, 1800]
+dep = [910, 1200, 1120, 1130, 1900, 2000]
+print(parallel_platforms(arr, dep))
+dep = [910, 1200, 1120, 1100, 1900, 2000]
+print(parallel_platforms(arr, dep))
