@@ -72,3 +72,23 @@ print(knapsack([1, 3, 4, 5], [1, 4, 5, 7], 7))
 print(knapsack_no_dp([1, 3, 4, 5], [1, 4, 5, 7], 4, 7))
 print(knapsack([1, 3, 4, 5], [1, 3, 4, 5], 7))
 print(knapsack_no_dp([1, 3, 4, 5], [1, 3, 4, 5], 4, 7))
+
+
+def knapsack_basic(items, maxWght):
+    """how i thought out of blue"""
+    if not items:
+        return 0
+
+    i = items[0]
+    without = knapsack_basic(items[1:], maxWght)
+
+    if i.get('w') > maxWght:
+        return without
+
+    with_i = knapsack_basic(items[1:], maxWght-i.get('w')) + i.get('v')
+
+    return max(without, with_i)
+
+
+items = [{'w': 1, 'v': 6}, {'w': 2, 'v': 10}, {'w': 3, 'v': 12}]
+print(knapsack_basic(items, 5))
