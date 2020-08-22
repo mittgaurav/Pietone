@@ -60,3 +60,30 @@ class Solution:
             head = temp
 
         return prev
+
+    def removeNthFromEnd(self, head: ListNode, m: int) -> ListNode:
+        """Two pointers - first pointer takes
+        till mth, so we can start the second,
+        which actually takes us to location"""
+        first = head
+        for i in range(m):
+            if not first:
+                raise Exception ('list is smaller than m {}'.format(m))
+            first = first.next
+
+        second = head
+        prev_to_second = None
+        while first:
+            first = first.next
+            prev_to_second = second
+            second = second.next
+
+        # delete element
+        if prev_to_second:
+            prev_to_second.next = second.next
+        else:
+            # there is no prev - we
+            # are removing the head
+            head = head.next
+
+        return head
