@@ -33,3 +33,30 @@ class Solution:
             ongoing.next = None
 
         return ret
+
+    def reverseList2(self, l):
+        # 1 -> 10 -> 20 -> 30 -> 40 -> 0
+        if not l or not l.next:
+            return l
+
+        # take the first element
+        # and reverse the rest of it
+        remaining = self.reverseList2(l.next)
+
+        l.next.next = l
+        l.next = None
+        return remaining
+
+    def reverseList3(self, head):
+        if not head or not head.next:
+            return head
+
+        prev = None
+        temp = None
+        while head:
+            temp = head.next
+            head.next = prev
+            prev = head
+            head = temp
+
+        return prev
