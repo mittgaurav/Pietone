@@ -94,7 +94,7 @@ if __name__ == "__main__":
 
 def binary_search_rotated_array(arr, low, high):
     """given ascending order arr,
-    find the smallest element"""
+    find the largest element"""
     # we have to find the half in
     # which transition from large
     # series to smaller happens.
@@ -114,21 +114,51 @@ def binary_search_rotated_array(arr, low, high):
         return binary_search_rotated_array(arr, low, mid-1)
     return binary_search_rotated_array(arr, mid + 1, high)
 
+def binary_search_rotated_array2(arr, low, high):
+    """given ascending order arr,
+    find the smallest element"""
+    # we have to find the half in
+    # which transition from large
+    # series to smaller happens.
+    if high < low:
+        return -1
+    if high == low:
+        return arr[low]
+
+    if high - low == 1:
+        return arr[low] if arr[low] < arr[high] else arr[high]
+
+    # low + (high - low)/2;
+    mid = (low + high)//2
+
+    # normally sorted list
+    if arr[low] < arr[mid] < arr[high]:
+        return arr[low]
+
+    # mid is bigger - starting
+    # point is towards the end
+    if arr[low] < arr[mid]:
+        return binary_search_rotated_array2(arr, mid+1, high)
+
+    # if arr[mid] > arr[l]:
+    return binary_search_rotated_array2(arr, low, mid)
+
 
 if __name__ == "__main__":
-    print("====", binary_search_rotated_array.__name__)
-    A = [3, 4, 5, 6, 7, -9, 2]
-    print(binary_search_rotated_array(A, 0, len(A)-1))
-    A = [5, 6, 7, 8, 9, 10, 1, 2, 3, 4]
-    print(binary_search_rotated_array(A, 0, len(A)-1))
-    A = [5, 6, 7, 8, 9, 1, 2, 3, 4]
-    print(binary_search_rotated_array(A, 0, len(A)-1))
-    A = [5, 6, 7, 8, 1, 2, 3, 4]
-    print(binary_search_rotated_array(A, 0, len(A)-1))
-    A = [5, 6, 7, 1, 2, 3, 4]
-    print(binary_search_rotated_array(A, 0, len(A)-1))
-    A = [1, 2, 3, 4, 5, 6, 7]
-    print(binary_search_rotated_array(A, 0, len(A)-1))
+    for fn in [binary_search_rotated_array, binary_search_rotated_array2]:
+        print("====", fn.__name__)
+        A = [3, 4, 5, 6, 7, -9, 2]
+        print(fn(A, 0, len(A)-1))
+        A = [5, 6, 7, 8, 9, 10, 1, 2, 3, 4]
+        print(fn(A, 0, len(A)-1))
+        A = [5, 6, 7, 8, 9, 1, 2, 3, 4]
+        print(fn(A, 0, len(A)-1))
+        A = [5, 6, 7, 8, 1, 2, 3, 4]
+        print(fn(A, 0, len(A)-1))
+        A = [5, 6, 7, 1, 2, 3, 4]
+        print(fn(A, 0, len(A)-1))
+        A = [1, 2, 3, 4, 5, 6, 7]
+        print(fn(A, 0, len(A)-1))
 
 
 def search_infinite_array(arr, v):
