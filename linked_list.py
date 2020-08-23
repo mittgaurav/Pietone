@@ -68,7 +68,7 @@ class Solution:
         first = head
         for i in range(m):
             if not first:
-                raise Exception ('list is smaller than m {}'.format(m))
+                raise Exception('list is smaller than m {}'.format(m))
             first = first.next
 
         second = head

@@ -114,6 +114,7 @@ def binary_search_rotated_array(arr, low, high):
         return binary_search_rotated_array(arr, low, mid-1)
     return binary_search_rotated_array(arr, mid + 1, high)
 
+
 def binary_search_rotated_array2(arr, low, high):
     """given ascending order arr,
     find the smallest element"""
