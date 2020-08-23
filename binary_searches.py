@@ -92,37 +92,43 @@ if __name__ == "__main__":
     print(-1, binary_search_greater([1, 2, 3, 4, 5, 7, 8], -1))
 
 
-def binary_search_rotated_array(arr, i, j):
+def binary_search_rotated_array(arr, low, high):
     """given ascending order arr,
     find the smallest element"""
     # we have to find the half in
     # which transition from large
     # series to smaller happens.
-    if i > j:
+    if high < low:
         return -1
-    if i == j:
-        return arr[i]
+    if high == low:
+        return arr[low]
 
-    mid = i + (j - i - 1) // 2
+    # low + (high - low)/2;
+    mid = (low + high)//2
 
-    if arr[mid] < arr[0]:
-        return binary_search_rotated_array(arr, i, mid)
-
-    return binary_search_rotated_array(arr, mid+1, len(arr))
+    if mid < high and arr[mid] > arr[mid + 1]:
+        return arr[mid]
+    if mid > low and arr[mid] < arr[mid - 1]:
+        return arr[mid-1]
+    if arr[low] >= arr[mid]:
+        return binary_search_rotated_array(arr, low, mid-1)
+    return binary_search_rotated_array(arr, mid + 1, high)
 
 
 if __name__ == "__main__":
     print("====", binary_search_rotated_array.__name__)
     A = [3, 4, 5, 6, 7, -9, 2]
-    print(binary_search_rotated_array(A, 0, len(A)))
+    print(binary_search_rotated_array(A, 0, len(A)-1))
     A = [5, 6, 7, 8, 9, 10, 1, 2, 3, 4]
-    print(binary_search_rotated_array(A, 0, len(A)))
+    print(binary_search_rotated_array(A, 0, len(A)-1))
     A = [5, 6, 7, 8, 9, 1, 2, 3, 4]
-    print(binary_search_rotated_array(A, 0, len(A)))
+    print(binary_search_rotated_array(A, 0, len(A)-1))
     A = [5, 6, 7, 8, 1, 2, 3, 4]
-    print(binary_search_rotated_array(A, 0, len(A)))
+    print(binary_search_rotated_array(A, 0, len(A)-1))
     A = [5, 6, 7, 1, 2, 3, 4]
-    print(binary_search_rotated_array(A, 0, len(A)))
+    print(binary_search_rotated_array(A, 0, len(A)-1))
+    A = [1, 2, 3, 4, 5, 6, 7]
+    print(binary_search_rotated_array(A, 0, len(A)-1))
 
 
 def search_infinite_array(arr, v):
