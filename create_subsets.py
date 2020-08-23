@@ -94,14 +94,6 @@ def permutations(arr):
     return result
 
 
-print(permutations.__name__)
-print(3, permutations([1, 2, 3]))
-print(4, len(permutations([1, 2, 3, 4])))
-print(5, len(permutations([1, 2, 3, 4, 5])))
-print(7, len(permutations([1, 2, 3, 4, 5, 6, 7])))
-print(8, len(permutations([1, 2, 3, 4, 5, 6, 7, 8])))
-
-
 def permute(arr):
     """permute using backtracking"""
     total = []
@@ -128,9 +120,30 @@ def permute(arr):
     return total
 
 
-print(permute.__name__)
-print(3, permute([1, 2, 3]))
-print(4, len(permute([1, 2, 3, 4])))
-print(5, len(permute([1, 2, 3, 4, 5])))
-print(7, len(permute([1, 2, 3, 4, 5, 6, 7])))
-print(8, len(permute([1, 2, 3, 4, 5, 6, 7, 8])))
+for fn in [permutations, permute]:
+    print(fn.__name__)
+    print(3, fn([1, 2, 3]))
+    print(4, len(fn([1, 2, 3, 4])))
+    print(5, len(fn([1, 2, 3, 4, 5])))
+    print(7, len(fn([1, 2, 3, 4, 5, 6, 7])))
+    print(8, len(fn([1, 2, 3, 4, 5, 6, 7, 8])))
+print("--------------------")
+
+
+def perm(string):
+    if len(string) == 0:
+        return []
+    if len(string) == 1:
+        return [string]
+
+    result = []
+    for char in string:
+        rem = string.replace(char, '')
+        partial = perm(rem)
+        result.extend([char + x for x in partial])
+
+    return result
+
+print('string perm')
+print('abcd', len(perm('abcd')))
+print('abcde', len(perm('abcde')))
