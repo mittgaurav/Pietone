@@ -232,3 +232,25 @@ arr = [
 assert [print(_) for _ in arr]
 arr = minesweeper(arr)
 assert [print(_) for _ in arr]
+
+
+def share_buy_sell_once(arr):
+    """given share prices, buy and
+    sell once to maximize profits.
+    No short selling allowed."""
+    min_price = 99999
+    max_profit = 0
+
+    for x in arr:
+        max_profit = max(x-min_price, max_profit)
+        min_price = min(x, min_price)
+
+    return max_profit
+
+
+print('====', share_buy_sell_once.__name__)
+print(share_buy_sell_once([5, 10, 2, 8, 12, 5]))
+print(share_buy_sell_once([5, 10, 15, 8, 12, 5]))
+print(share_buy_sell_once([5, 10, 15, 8, 16, 5]))
+print(share_buy_sell_once([5, 10, 15, 20, 25, 30]))
+print(share_buy_sell_once(reversed([5, 10, 15, 20, 25, 30])))
