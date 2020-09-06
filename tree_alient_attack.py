@@ -62,7 +62,7 @@ def alien_attack(tree, node):
     visited = dict()
     queue = list()
     queue.append(node)
-    while len(queue) is not 0:
+    while queue:
         level_length = len(queue)
         time += 1
         while level_length > 0:
@@ -88,7 +88,7 @@ def attack_no_parent(tree, node):
 
     # path from root to attack
     path = find_path(tree, node)
-    if len(path) is 0:
+    if not path:
         return 0
 
     # time to traverse tree
