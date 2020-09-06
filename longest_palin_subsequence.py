@@ -96,6 +96,7 @@ print("--------------------")
 
 def longest_paren(arr):
     """parenthesis match longest"""
+    # not working
     if not arr:
         return 0
 
@@ -109,10 +110,11 @@ def longest_paren(arr):
     elif arr[0] != '(':
         return longest_paren(arr[1:])
     elif arr[-1] != ')':
-        return longest_paren(arr[1:])
+        return longest_paren(arr[:-1])
 
 
 print(longest_paren.__name__)
 print(longest_paren("()("))
 print(longest_paren("("))
 print(longest_paren(")()())"))
+print(longest_paren(")())())"))
