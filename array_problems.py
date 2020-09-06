@@ -286,3 +286,38 @@ def get_products_of_all_except_index(int_list):
 print("====", get_products_of_all_except_index.__name__)
 print(get_products_of_all_except_index([8, 2, 4, 3, 1, 5]))
 print(get_products_of_all_except_index([-7, -1, -4, -2]))
+
+
+def pair_sum_equal_k(arr, k, i=0, j=9999):
+    """in sorted list find whether
+    any pair wise sum equal k"""
+#    j = min(j, len(arr)-1)
+#    if j <= i or i < 0:
+#        return 'No'
+#
+#    if arr[i] + arr[j] == k:
+#        return 'Yes'
+#    if arr[i] + arr[j] > k:
+#        return pair_sum_equal_k(arr, k, i, j-1)
+#    if arr[i] + arr[j] < k:
+#        return pair_sum_equal_k(arr, k, i+1, j)
+#
+#    if not arr:
+#        return 'No'
+
+    i = 0
+    j = len(arr) - 1
+    while i < j:
+        if arr[i] + arr[j] == k:
+            return 'Yes'
+        if arr[i] + arr[j] > k:
+            j -= 1
+        if arr[i] + arr[j] < k:
+            i += 1
+    return 'No'
+
+
+print(pair_sum_equal_k([1, 2, 3, 9], 8))
+print(pair_sum_equal_k([1, 2, 3, 5], 8))
+print(pair_sum_equal_k([1, 2, 3, 5, 9], 8))
+print(pair_sum_equal_k([1, 2, 5, 9], 8))
