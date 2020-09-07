@@ -254,3 +254,36 @@ print(share_buy_sell_once([5, 10, 15, 8, 12, 5]))
 print(share_buy_sell_once([5, 10, 15, 8, 16, 5]))
 print(share_buy_sell_once([5, 10, 15, 20, 25, 30]))
 print(share_buy_sell_once(reversed([5, 10, 15, 20, 25, 30])))
+
+
+def max_meetings(s, e):
+    """given start and end times
+    find max num of meetings."""
+    result = []
+    for i in range(len(s)):
+        if i == len(s) - 1:
+            result.append([s[i], e[i]])
+            return result
+        if e[i] <= s[i+1]:
+            # if this meeting ends before
+            # start of next, must pick it
+            result.append([s[i], e[i]])
+        elif e[i] > e[i+1]:
+            # if this meetings extends
+            # beyond next, do not pick
+            continue
+        else:
+            # second meeting is useless.
+            # remove it, first may still
+            # keep it for next iteration
+            s[i+1], e[i+1] = s[i], e[i]
+
+    return []
+
+
+print('====', max_meetings.__name__)
+print(max_meetings([0, 1, 3, 5, 5, 8], [6, 2, 4, 7, 9, 9]))
+print(max_meetings(
+        [8931, 11273, 27545, 43659, 50074, 50879, 75250, 77924],
+        [93424, 54316, 35533, 81825, 114515, 73383, 112960, 160252]))
+print(max_meetings([1, 5, 6, 8, 8], [10, 20, 8, 9, 10]))
