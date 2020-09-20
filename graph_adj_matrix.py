@@ -105,7 +105,7 @@ class Graph:
         nx.draw_networkx_nodes(self, pos, node_size=700)
 
         # edges
-        nx.draw_networkx_edges(self, pos)
+        nx.draw_networkx_edges(self, pos, arrowsize=25)
 
         # labels
         nx.draw_networkx_labels(self, pos, font_size=20)
