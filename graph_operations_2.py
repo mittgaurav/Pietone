@@ -104,8 +104,15 @@ def topological_sort2(graph):
         if inn in visited:
             return
         visited.add(inn)
+
+        # first process children
+        # no child node added to
+        # stack directly first.
         for child in graph[inn]:
             inner(child)
+        # once leaves (children)
+        # are added to stack, we
+        # add itself to stack.
         stack.append(inn)
 
     for node in graph.nodes():
