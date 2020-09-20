@@ -6,6 +6,7 @@ Created on Wed Jan  2 18:59:02 2019
 """
 from tree import Tree
 import binary_searches as BSGE
+from tree import Bst
 
 
 def deepest_node(tree, depth=0):
@@ -399,6 +400,46 @@ def spiral_print_bfs(node):
         queue.reverse()
 
 
-print('spiral_print_bfs')
+print('==spiral_print_bfs==')
 spiral_print_bfs(T)
 print()
+
+
+def in_order_successor_bst(node, data, last_larger=None):
+    """return in order successor
+    two cases:
+        1) node has right child:
+            min val in right child
+        2) last larger parent"""
+
+    if not node:
+        return None
+
+    if node.data > data:
+        last_larger = node.data
+        return in_order_successor_bst(node.left, data, last_larger)
+    elif node.data < data:
+        return in_order_successor_bst(node.right, data, last_larger)
+    else:
+        if node.right:
+            # right child exists
+            # - find the minimum
+            child = node.right
+            while child.left:
+                child = child.left
+            return child.data
+        else:
+            return last_larger
+
+
+print('==in_order_successor_bst==')
+tree = Bst.bst()
+print(tree)
+print(tree.inorder())
+print(4, in_order_successor_bst(tree, 4))
+print(0, in_order_successor_bst(tree, 0))
+print(1, in_order_successor_bst(tree, 1))
+print(3, in_order_successor_bst(tree, 3))
+print(5, in_order_successor_bst(tree, 5))
+print(8, in_order_successor_bst(tree, 8))
+print(9, in_order_successor_bst(tree, 9))

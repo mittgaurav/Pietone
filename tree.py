@@ -219,3 +219,10 @@ class Bst(Tree):
             parent.left = None
         else:  # parent.right is node
             parent.right = None
+
+    def inorder(self, result=[]):
+        """in order traversal"""
+        self.left.inorder(result) if self.left else None
+        result.append(self.data)
+        self.right.inorder(result) if self.right else None
+        return result
