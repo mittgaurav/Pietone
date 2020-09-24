@@ -443,3 +443,42 @@ print(3, in_order_successor_bst(tree, 3))
 print(5, in_order_successor_bst(tree, 5))
 print(8, in_order_successor_bst(tree, 8))
 print(9, in_order_successor_bst(tree, 9))
+
+
+total = 0
+
+
+def num_of_paths(tree):
+    """find num of paths in a tree.
+    for one node, count go through
+    v. start/end with the node"""
+    global total
+
+    if not tree:
+        # what starts at this node
+        return 0
+
+    # only ones that start at either child
+    # are then ones that can start here +1
+    l_t = num_of_paths(tree.left) if tree.left else 0
+    r_t = num_of_paths(tree.right) if tree.right else 0
+
+    # go through either children
+    # can't go through this node
+    l_t = (1 + l_t) if tree.left else 0
+    r_t = (1 + r_t) if tree.right else 0
+    t = l_t + r_t
+
+    # overall, we need to add both
+    # that start here and go thru.
+    total += t + (l_t * r_t)
+
+    return t
+
+
+print('==num_of_paths==')
+print(num_of_paths(tree), total)
+tree = Bst(4, Bst(2, Bst(1), Bst(3)), Bst(6, Bst(5), Bst(7)))
+total = 0
+print(tree)
+print(num_of_paths(tree), total)
