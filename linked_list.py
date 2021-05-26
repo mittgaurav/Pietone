@@ -87,3 +87,54 @@ class Solution:
             head = head.next
 
         return head
+
+
+def insert_list(list, n):
+    node = list
+    prev = None
+
+    while node is not None and node.val < n:
+        prev = node
+        node = node.next
+
+    this = ListNode(n, node)
+    if prev is None:
+        return this
+
+    prev.next = this
+
+    return list
+
+
+def delete_node(list, n):
+    node = list
+    prev = None
+
+    # edge condition: first value matched
+    if node.val == n:
+        return node.next
+
+    while node is not None and node.val != n:
+        prev = node
+        node = node.next
+
+    if node is not None:
+        prev.next = node.next
+
+    return list
+
+
+list = ListNode(1, ListNode(2, ListNode(5, None)))  # 1 -> 2 -> 5
+list = ListNode(1, ListNode(10, ListNode(12, None)))
+list = ListNode(1, ListNode(52, ListNode(57, None)))
+list = None
+list = ListNode(1, ListNode(2, ListNode(10, None)))
+
+n = 10
+
+result = delete_node(list, n)
+
+while result.next:
+    print(result.val, '->', end=' ')
+    result = result.next
+print(result.val)
