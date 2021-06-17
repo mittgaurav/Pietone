@@ -321,3 +321,41 @@ print(pair_sum_equal_k([1, 2, 3, 9], 8))
 print(pair_sum_equal_k([1, 2, 3, 5], 8))
 print(pair_sum_equal_k([1, 2, 3, 5, 9], 8))
 print(pair_sum_equal_k([1, 2, 5, 9], 8))
+
+
+def longest_non_repeating(s):
+    """get longest non repeating string
+    length.
+
+    track the window of unique substring
+    1) for each char, see when does its window starts.
+        a) either it is existing window, or
+        b) last time we saw this character.
+        max of two
+    """
+    if not s:
+        return 0
+
+    curr_len = 0
+    window_start = 0
+    max_len = 0
+
+    # last location we saw this character
+    arr = [-1] * 128
+    for i in range(len(s)):
+        # what is the start of window
+        # including this character
+        window_start = max(window_start, arr[ord(s[i])] + 1)
+        curr_len = i - window_start + 1
+        arr[ord(s[i])] = i
+        max_len = max(curr_len, max_len)
+    return max_len
+
+
+print("====", longest_non_repeating.__name__)
+print(longest_non_repeating('abcabcbb'))
+print(longest_non_repeating('pwwkew'))
+print(longest_non_repeating('bbbbbb'))
+print(longest_non_repeating('abcdefgbbag'))
+print(longest_non_repeating(''))
+print(longest_non_repeating('abcbcbb'))
