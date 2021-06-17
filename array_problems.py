@@ -336,19 +336,20 @@ def longest_non_repeating(s):
     if not s:
         return 0
 
-    curr_len = 0
     window_start = 0
     max_len = 0
 
     # last location we saw this character
     arr = [-1] * 128
     for i in range(len(s)):
-        # what is the start of window
-        # including this character
+        # start of window including this character
+        # it is either existing window
+        # or if this char repeated, then it is from that location
         window_start = max(window_start, arr[ord(s[i])] + 1)
-        curr_len = i - window_start + 1
+        max_len = max(max_len, i - window_start + 1)
+
         arr[ord(s[i])] = i
-        max_len = max(curr_len, max_len)
+
     return max_len
 
 
