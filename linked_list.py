@@ -13,6 +13,9 @@ class ListNode:
         self.val = val
         self.next = next
 
+    def __repr__(self):
+        return f"{self.val} -> {self.next}"
+
 
 class Solution:
     def reverseList(self, head: ListNode) -> ListNode:
@@ -124,17 +127,18 @@ def delete_node(list, n):
     return list
 
 
-list = ListNode(1, ListNode(2, ListNode(5, None)))  # 1 -> 2 -> 5
-list = ListNode(1, ListNode(10, ListNode(12, None)))
-list = ListNode(1, ListNode(52, ListNode(57, None)))
-list = None
-list = ListNode(1, ListNode(2, ListNode(10, None)))
+if __name__ == "__main__":
+    list = ListNode(1, ListNode(2, ListNode(5, None)))  # 1 -> 2 -> 5
+    list = ListNode(1, ListNode(10, ListNode(12, None)))
+    list = ListNode(1, ListNode(52, ListNode(57, None)))
+    list = None
+    list = ListNode(1, ListNode(2, ListNode(10, None)))
 
-n = 10
+    n = 10
 
-result = delete_node(list, n)
+    result = delete_node(list, n)
 
-while result.next:
-    print(result.val, '->', end=' ')
-    result = result.next
-print(result.val)
+    while result.next:
+        print(result.val, '->', end=' ')
+        result = result.next
+    print(result.val)
