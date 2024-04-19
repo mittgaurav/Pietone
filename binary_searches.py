@@ -92,6 +92,38 @@ if __name__ == "__main__":
     print(-1, binary_search_greater([1, 2, 3, 4, 5, 7, 8], -1))
 
 
+def _bs_closest(arr, num, i, j):
+    if j < i: return -1
+    if j == i: return i
+    mid = (i + j) // 2
+    if arr[mid] == num: return mid
+    if arr[mid] > num:
+        if mid == 0: return mid
+        if arr[mid - 1] <= num:
+            return mid - 1 if (num - arr[mid - 1]) < (arr[mid] - num) else mid
+        else: return _bs_closest(arr, num, i, mid - 1)
+    if arr[mid] < num:
+        if mid == len(arr) - 1: return mid
+        if arr[mid + 1] >= num:
+            return mid + 1 if (num - arr[mid]) > (arr[mid + 1] - num) else mid
+        else: return _bs_closest(arr, num, mid + 1, j)
+
+
+def binary_search_closest(arr, num):
+    return arr[_bs_closest(arr, num, 0, len(arr) - 1)]
+
+
+if __name__ == "__main__":
+    print("====", binary_search_closest.__name__)
+    print(100, binary_search_closest([1, 2, 3, 8, 15, 17, 18], 100))
+    print(1, binary_search_closest([1, 2, 3, 8, 15, 17, 18], 1))
+    print(9, binary_search_closest([1, 2, 3, 8, 15, 17, 18], 9))
+    print(3, binary_search_closest([1, 2, 3, 8, 15, 17, 18], 9))
+    print(4, binary_search_closest([1, 2, 3, 8, 15, 17, 18], 4))
+    print(6, binary_search_closest([1, 2, 3, 8, 15, 17, 18], 6))
+    print(-1, binary_search_closest([1, 2, 3, 8, 15, 17, 18], -1))
+
+
 def binary_search_rotated_array(arr, low, high):
     """given ascending order arr,
     find the largest element"""

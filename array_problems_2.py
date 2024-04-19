@@ -107,10 +107,10 @@ def add_one(arr, j):
 
 print('====', add_one.__name__)
 arrays = [
-        [2, 3, 4, 1],
-        [9, 9, 9, 9],
-        [0]
-        ]
+    [2, 3, 4, 1],
+    [9, 9, 9, 9],
+    [0]
+]
 
 for array in arrays:
     print(array, end='->')
@@ -150,10 +150,10 @@ def i_j_maximum_index(arr):
 
 
 arrays = [
-        [9, 2, 3, 4, 5, 6, 7, 8, 18, 0],
-        [7, 3, 2, 1, 8, 0, 5, 1, 12, 5],
-        [7, 3, 2, 1, 8, 0, 5, 1, 2, 5],
-        ]
+    [9, 2, 3, 4, 5, 6, 7, 8, 18, 0],
+    [7, 3, 2, 1, 8, 0, 5, 1, 12, 5],
+    [7, 3, 2, 1, 8, 0, 5, 1, 2, 5],
+]
 
 print('====', i_j_maximum_index.__name__)
 for array in arrays:
@@ -178,13 +178,13 @@ def parallel_platforms(arr, dep):
             val += 1
             i += 1
         elif arr[i] == dep[j]:
-            # departure along with arrival. We
-            # don't need an extra platform.
+            # departure along with arrival. So
+            # we don't need an extra platform.
             i += 1
             j += 1
         elif arr[i] > dep[j]:
             # departure happened. see how many
-            # platforms were needed for this.
+            # platforms were needed till this.
             maxi = max(maxi, val)
             j += 1
             val -= 1
@@ -266,10 +266,10 @@ def minesweeper(arr):
 
 print('====', minesweeper.__name__)
 arr = [
-       ['*', '.', '.', '.'],
-       ['.', '.', '.', '.'],
-       ['.', '*', '.', '.'],
-       ['.', '.', '.', '.'],
+    ['*', '.', '.', '.'],
+    ['.', '.', '.', '.'],
+    ['.', '*', '.', '.'],
+    ['.', '.', '.', '.'],
 ]
 assert [print(_) for _ in arr]
 arr = minesweeper(arr)
@@ -326,6 +326,36 @@ def max_meetings(s, e):
 print('====', max_meetings.__name__)
 print(max_meetings([0, 1, 3, 5, 5, 8], [6, 2, 4, 7, 9, 9]))
 print(max_meetings(
-        [8931, 11273, 27545, 43659, 50074, 50879, 75250, 77924],
-        [93424, 54316, 35533, 81825, 114515, 73383, 112960, 160252]))
+    [8931, 11273, 27545, 43659, 50074, 50879, 75250, 77924],
+    [93424, 54316, 35533, 81825, 114515, 73383, 112960, 160252]))
 print(max_meetings([1, 5, 6, 8, 8], [10, 20, 8, 9, 10]))
+
+
+def kclosest_elems(arr, num, k):
+    """give k closest elements
+    to the given num in arr"""
+    if not k: return None
+
+    from binary_searches import _bs_closest
+    mid = _bs_closest(arr, num, 0, len(arr) - 1)
+
+    # we are moving these
+    # like the merge step
+    # of merge sort algo.
+    i, j = mid, mid
+    while i >= 0 or j < len(arr):
+        if not k: break
+
+        if j >= len(arr) or (i > 0 and ((num - arr[i]) <= (arr[j] - num))):
+            i -= 1
+        else: j += 1
+        k -= 1
+
+    return num, arr, arr[i: j]
+
+print('====', kclosest_elems.__name__)
+print(kclosest_elems([1, 2, 3, 4, 5], 3, 4))
+print(kclosest_elems([2, 4, 5, 6, 9], 6, 3))
+print(kclosest_elems([2, 4, 5, 6, 9], 5.5, 3))
+print(kclosest_elems([2, 4, 5, 6, 9], 10, 3))
+print(kclosest_elems([2, 4, 5, 6, 9], 0, 3))
