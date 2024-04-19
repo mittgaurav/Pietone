@@ -79,4 +79,39 @@ def kmergesort(arrays):
     return result
 
 
-print(kmergesort([[1, 4, 7], [2, 5, 8], [3, 6, 9]]))
+print(kmergesort([[1, 4, 7], [2, 5, 8, 10, 10], [3, 6, 9], [], [1, 5, 67]]))
+
+
+def kmergesort2(arrays):
+    class ThisHeap(Heap):
+        """Array with minimum value at root"""
+        @classmethod
+        def order(cls, arr, parent, child):
+            """parent <= child in min heap"""
+            return arr[parent][0] <= arr[child][0]
+
+    heap = ThisHeap()
+    result = []
+
+    current_index = [0] * len(arrays)
+
+    # push first element from
+    # every array on the heap
+    for i in range(len(arrays)):
+        if arrays[i]:
+            heap.add((arrays[i][0], i))
+
+    while heap.vals:
+        val, i = heap.pop()
+        result.append(val)
+
+        # check if the array
+        # has more elements.
+        current_index[i] += 1
+        if current_index[i] < len(arrays[i]):
+            heap.add((arrays[i][current_index[i]], i))
+
+    return result
+
+
+print(kmergesort2([[1, 4, 7], [2, 5, 8, 10, 10], [3, 6, 9], [], [1, 5, 67]]))
