@@ -14,7 +14,7 @@ class ListNode:
         self.next = next
 
     def __repr__(self):
-        return f"{self.val} -> {self.next}"
+        return f"{self.val} {('-> ' + str(self.next)) if self.next else ''}"
 
 
 class Solution:
@@ -128,17 +128,20 @@ def delete_node(list, n):
 
 
 if __name__ == "__main__":
-    list = ListNode(1, ListNode(2, ListNode(5, None)))  # 1 -> 2 -> 5
-    list = ListNode(1, ListNode(10, ListNode(12, None)))
-    list = ListNode(1, ListNode(52, ListNode(57, None)))
-    list = None
-    list = ListNode(1, ListNode(2, ListNode(10, None)))
+    print("====", Solution().reverseList.__name__)
+    L = ListNode(1, ListNode(2, ListNode(5, None)))  # 1 -> 2 -> 5
+    print(L)
+    L = Solution().reverseList2(L)
+    print(L)
+    L = ListNode(1, ListNode(10, ListNode(12, L)))
+    L = ListNode(1, ListNode(52, ListNode(57, L)))
+    print(L)
+    print(Solution().reverseList2(L))
+    L = None
+    L = ListNode(1, ListNode(2, ListNode(10, ListNode(15, None))))
 
+    print("====", delete_node.__name__)
     n = 10
-
-    result = delete_node(list, n)
-
-    while result.next:
-        print(result.val, '->', end=' ')
-        result = result.next
-    print(result.val)
+    print(L, "remove", n)
+    result = delete_node(L, n)
+    print(result)
