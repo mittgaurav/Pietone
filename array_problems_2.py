@@ -9,29 +9,30 @@ Created on Sun May 26 21:13:01 2019
 def string_in_order(order, string):
     """given order, check if chars
     in string follow that order"""
-    if not string:
-        return True
-    if not order:
-        return True
+    if not string: return True
+    if not order:  return True
 
     ordered_set = set(order)
     j = 0
     for char in string:
-        if char in ordered_set:
-            while j < len(order) and order[j] != char:
-                j += 1
+        if char not in ordered_set: continue
 
-            if j == len(order):
-                return False
+        # increment till we reach
+        # char in the given order
+        while j < len(order) and order[j] != char:
+            j += 1
+
+        if j == len(order):
+            return False
 
     return True
 
 
 print("====", string_in_order.__name__)
-print(string_in_order('abc', 'aaa'))
-print(string_in_order('abc', 'abc'))
-print(string_in_order('abc', 'cabc'))
-print(string_in_order('abc', 'xadb'))
+print('order', 'abc', 'str', 'aaa', string_in_order('abc', 'aaa'))
+print('order', 'abc', 'str', 'abc', string_in_order('abc', 'abc'))
+print('order', 'abc', 'str', 'cabc', string_in_order('abc', 'cabc'))
+print('order', 'abc', 'str', 'xadb', string_in_order('abc', 'xadb'))
 
 
 def put_string_in_order(order, string):
@@ -180,8 +181,9 @@ def parallel_platforms(arr, dep):
             # departure along with arrival. We
             # don't need an extra platform.
             i += 1
+            j += 1
         elif arr[i] > dep[j]:
-            # departure happened - see how many
+            # departure happened. see how many
             # platforms were needed for this.
             maxi = max(maxi, val)
             j += 1
@@ -194,18 +196,59 @@ def parallel_platforms(arr, dep):
     return maxi
 
 
+def parallel_platforms_times(arr, dep):
+    """given arrival and departure times
+    of trains; how many of the platforms
+    are going to be used by time slot"""
+    arr.sort()
+    dep.sort()
+
+    i = 0
+    j = 0
+    prev_time = -1
+    val = 0
+    result = []
+    while i < len(arr):
+        if arr[i] < dep[j]:
+            if prev_time > 0: result.append((prev_time, arr[i], val))
+            prev_time = arr[i]
+            val += 1
+            i += 1
+        elif arr[i] == dep[j]:
+            i += 1
+            j += 1
+        elif arr[i] > dep[j]:
+            result.append((prev_time, dep[j], val))
+            prev_time = dep[j]
+            j += 1
+            val -= 1
+
+    # departures after arrivals
+    while j < len(arr):
+        result.append((prev_time, dep[j], val))
+        prev_time = dep[j]
+        val -= 1
+        j += 1
+
+    assert val == 0, "All platform are free at end"
+    return result
+
+
 print("====", parallel_platforms.__name__)
 arr = [900, 940, 950, 1100, 1500, 1800]
 dep = [910, 1200, 1120, 1130, 1900, 2000]
 print(parallel_platforms(arr, dep))
+print(parallel_platforms_times(arr, dep))
 dep = [910, 1200, 1120, 1100, 1900, 2000]
 print(parallel_platforms(arr, dep))
+print(parallel_platforms_times(arr, dep))
 
 
 def minesweeper(arr):
     """given mines in a field,
-    draw the minesweeper map"""
-
+    draw minesweeper map; i.e.
+    count the number of bombs
+    surrounding each index"""
     def _g(i, j):
         try:
             return 1 if arr[i][j] == '*' else 0
@@ -218,7 +261,6 @@ def minesweeper(arr):
                 arr[i][j] = str(_g(i-1, j) + _g(i, j-1) + _g(i+1, j)
                                 + _g(i, j+1) + _g(i-1, j-1) + _g(i+1, j+1)
                                 + _g(i-1, j+1) + _g(i+1, j-1))
-
     return arr
 
 
