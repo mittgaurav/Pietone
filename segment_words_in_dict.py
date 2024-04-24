@@ -24,7 +24,36 @@ def words_in_dict(diction, word):
     return None
 
 
-dic = ('a', 'aa', 'aaa', 'aaaa', 'b', 'bab')
-print(words_in_dict(dic, 'aaaaaaaaab'))
-print(words_in_dict(dic, 'aaaaaaaabab'))
-print(words_in_dict(dic, 'aac'))
+def segment_words(diction, word):
+    """
+    using dynamic programming checks
+    if a word starts from a location
+    """
+    memo = []
+    for i in range(len(word)):
+        memo.append([])
+        for j in range(len(diction)):
+            memo[i].append(0)
+
+    for i in range(len(word)):
+        for j in range(len(diction)):
+            dword = diction[j]
+            if len(word[i:]) >= len(dword):
+                memo[i][j] = int(word[i:i+len(dword)] == dword)
+
+    [print(_) for _ in memo]
+
+
+
+dic = ['a', 'aa', 'aaa', 'aaaa', 'b', 'bab']
+print(words_in_dict(dic, 'aaaaaaaaab'), segment_words(dic, 'aaaaaaaaab'))
+print(words_in_dict(dic, 'aaaaaaaabab'), segment_words(dic, 'aaaaaaaabab'))
+print(words_in_dict(dic, 'aac'), segment_words(dic, 'aac'))
+
+dic = ["i", "like", "sam", "sung", "samsung", "mobile", "man", "mango"]
+print(words_in_dict(dic, 'ilikesamsung'), segment_words(dic, 'ilikesamsung'))
+print(words_in_dict(dic, 'ilikesamgo'), segment_words(dic, 'ilikesamgo'))
+print(words_in_dict(dic, 'ilikesaman'), segment_words(dic, 'ilikesaman'))
+
+dic = ["pine", "apple", "pen"]
+print(words_in_dict(dic, 'applepineapple'), segment_words(dic, 'applepineapple'))
