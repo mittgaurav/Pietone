@@ -78,7 +78,7 @@ def topological_sort(graph):
     sort = list()
     visited = set()
     while nodes:
-        node = nodes.pop(0)
+        node = nodes.pop()
         if node in visited:
             continue
         visited.add(node)
@@ -121,14 +121,57 @@ def topological_sort2(graph):
     return list(reversed(stack))
 
 
+def topo_sort(graph):
+    """Using BF traversal: first
+    gather indegree of each node.
+    Then put zero degree parents
+    in a queue. and process them.
+    While processing them, we're
+    decreasing indegree of every
+    child of that node. Once the
+    child's indegree is zero, it
+    can be processed by enqueing
+    in the queue & processing it.
+    """
+    from collections import deque
+    if not graph: return []
+
+    # Get indegree of each node
+    indegree = {node: 0 for node in graph.nodes()}
+    for node in graph.nodes():
+        for child in graph[node]:
+            indegree[child] += 1
+
+    q = deque()
+    # First add all nodes with no parent
+    for child, indeg in indegree.items():
+        if indeg == 0: q.append(child)
+
+    result = []
+    while q:
+        node = q.popleft()
+        result.append(node)
+        for child in graph[node]:
+            # as parent node is processed,
+            # the child has one less thing
+            # to worry about. When nothing
+            # remains, we process it
+            indegree[child] -= 1
+            if indegree[child] == 0:
+                q.append(child)
+
+    assert sum(indegree.values()) == 0, "topo sort not possible, cycle?"
+    return result
+
+
 if __name__ == "__main__":
     G = DiGraph.dag()
     G.show()
-    for FN in [topological_sort, topological_sort2]:
+    for FN in [topological_sort, topological_sort2, topo_sort]:
         print(FN.__name__, FN(G))
     G = DiGraph.graph()
     G.show()
-    for FN in [topological_sort, topological_sort2]:
+    for FN in [topological_sort, topological_sort2, topo_sort]:
         print(FN.__name__, FN(G))
 
 
@@ -169,3 +212,107 @@ if __name__ == "__main__":
     G = Graph.graphw()
     G.show()
     krushal(G).show()
+
+
+def shortest_return_no_repeat(s):
+    """Given string of NESW direction return
+    the shortest path back to starting point
+    except for any node or edge of before"""
+    from collections import deque
+
+    if not s: return ''
+
+    # Find nodes traversed in onward journey
+    # and the ending point. Starts at origin
+    visited = set()
+    prev = (0, 0)
+    for c in s:
+        if c == 'N': prev = (prev[0], prev[1] + 1)
+        if c == 'S': prev = (prev[0], prev[1] - 1)
+        if c == 'E': prev = (prev[0] + 1, prev[1])
+        if c == 'W': prev = (prev[0] - 1, prev[1])
+        visited.add(prev)
+
+    # We are caching path to this
+    # node. This can be performed
+    # better with backtracking.
+    path = {prev: ''}
+    q = deque()
+    q.append(prev)
+    while q:
+        node = q.popleft()
+        for i, j, c in [[0, 1, 'N'], [0, -1, 'S'], [-1, 0, 'W'], [1, 0, 'E']]:
+            next = (node[0] + i, node[1] + j)
+            # This node is already visited
+            # either in onward journey, or
+            # In this traversal.
+            if next in visited: continue
+            path[next] = path[node] + c
+            if next == (0, 0):
+                return path[next]
+            q.append(next)
+            visited.add(next)
+    return 'ERROR'
+
+[["EZE","HBA"],["AXA","TIA"],
+
+ ["TIA","AUA"],["ADL","EZE"],
+
+ ["AUA","AXA"],
+
+ ]
+
+
+def shortest_return_no_repeat_backtrack(s):
+    """Given string of NESW direction return
+    the shortest path back to starting point
+    except for any node or edge of before"""
+    from collections import deque
+
+    if not s: return ''
+
+    # Find nodes traversed in onward journey
+    # and the ending point. Starts at origin
+    visited = set()
+    prev = (0, 0)
+    for c in s:
+        if c == 'N': prev = (prev[0], prev[1] + 1)
+        if c == 'S': prev = (prev[0], prev[1] - 1)
+        if c == 'E': prev = (prev[0] + 1, prev[1])
+        if c == 'W': prev = (prev[0] - 1, prev[1])
+        visited.add(prev)
+
+    def backtrack(parent, next):
+        if not parent: return ''
+        s = ''
+        while next in parent:
+            diff = (next[0] - parent[next][0], next[1] - parent[next][1])
+            if diff == (0, 1): s += 'N'
+            if diff == (0, -1): s += 'S'
+            if diff == (1, 0): s += 'E'
+            if diff == (-1, 0): s += 'W'
+            next = parent[next]
+
+        return "".join(reversed(s))
+
+    parent = {}
+    q = deque()
+    q.append(prev)
+    while q:
+        node = q.popleft()
+        for i, j, c in [[0, 1, 'N'], [0, -1, 'S'], [-1, 0, 'W'], [1, 0, 'E']]:
+            next = (node[0] + i, node[1] + j)
+            if next in visited: continue
+            parent[next] = node
+            if next == (0, 0):
+                return backtrack(parent, next)
+            q.append(next)
+            visited.add(next)
+
+    return 'ERROR'
+
+
+print(shortest_return_no_repeat('NNNENW'))
+print(shortest_return_no_repeat_backtrack('NNNENW'))
+print(shortest_return_no_repeat('NENWNENWNWNENWNEN'))
+print(shortest_return_no_repeat_backtrack('NENWNENWNWNENWNEN'))

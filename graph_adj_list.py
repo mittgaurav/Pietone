@@ -104,6 +104,7 @@ class Graph:
         else:
             self.prev_pos = pos
 
+        self.adj = self.adj_list
         # nodes
         nx.draw_networkx_nodes(self, pos, node_size=700)
 

@@ -6,10 +6,10 @@ Created on Sat Jan 19 15:01:38 2019
 """
 
 area = [[0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
-        [0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0],
-        [0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0],
+        [1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
+        [1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0],
+        [1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0]]
@@ -18,7 +18,7 @@ visited = [[0 for _ in range(len(area[0]))] for _ in range(len(area))]
 
 
 def count(i, j):
-    """count num of
+    """count max of
     continuous 1"""
     if i < 0 or i >= len(area) or j < 0 or j >= len(area[i]):
         return 0
@@ -78,6 +78,76 @@ for i in range(len(area)):
         res = max(res, count_nation(i, j, area[i][j]))
 
 print(res)
+
+
+def count_islands(arr):
+    # using BFS
+    from collections import deque
+    q = deque()
+    visited = [[0 for _ in range(len(arr[0]))] for _ in range(len(arr))]
+    count = 0
+    for i in range(len(arr)):
+        for j in range(len(arr[i])):
+            if visited[i][j] or not arr[i][j]: continue
+            q.append((i, j))
+            while q:
+                x, y = q.popleft()
+                if visited[x][y]: continue
+                visited[x][y] = 1
+                for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    if 0 <= x+dx < len(arr) and 0 <= y+dy < len(arr[0]):
+                        if not visited[x+dx][y+dy] and arr[x+dx][y+dy]:
+                            q.append((x+dx, y+dy))
+            count += 1
+    return count
+
+
+def max_island(arr):
+    """
+    Traverse the matrix checking if this node
+    is start of a new island. If yes, use BFS
+    to continue till this island is available.
+    When the island is exhausted; i.e., queue
+    is empty, continue search for next island.
+    """
+    from collections import deque
+    q = deque()
+    visited = [[0 for _ in range(len(arr[0]))] for _ in range(len(arr))]
+    mx = 0
+    for i in range(len(arr)):
+        for j in range(len(arr[i])):
+            this = 0
+            if visited[i][j] or not arr[i][j]: continue
+            q.append((i, j))
+            while q:
+                x, y = q.popleft()
+                if visited[x][y]: continue
+                visited[x][y] = 1
+                this += 1
+                for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    # four directions from current location.
+                    # Don't go less or more than array size
+                    if 0 <= x+dx < len(arr) and 0 <= y+dy < len(arr[0]):
+                        if not visited[x+dx][y+dy] and arr[x+dx][y+dy]:
+                            q.append((x+dx, y+dy))
+            mx = max(mx, this)
+    return mx
+
+
+print(f"max_island: {max_island(area)}, count_islands:{count_islands(area)}")
+area = [[0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
+        [1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0],
+        [1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0]]
+print(f"max_island: {max_island(area)}, count_islands:{count_islands(area)}")
+area =  [[1, 0, 1, 1, 0, 0, 0],
+         [1, 0, 1, 0, 1, 0, 0],
+         [0, 1, 0, 0, 0, 1, 1]]
+print(f"max_island: {max_island(area)}, count_islands:{count_islands(area)}")
 
 
 def paths(i, j, n):
