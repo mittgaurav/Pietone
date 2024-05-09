@@ -8,25 +8,20 @@ from priority_queue import Heap
 
 def merge(arr, brr):
     """merge two sorted arrays"""
-    ret = []
+    ret = []  # extra memory
     i = 0
     j = 0
     while i < len(arr) and j < len(brr):
         if arr[i] <= brr[j]:
             ret.append(arr[i])
-            i = i + 1
+            i += 1
         else:
             ret.append(brr[j])
-            j = j + 1
+            j += 1
 
-    # exhaust remaining
-    # elements, if any
-    while i < len(arr):
-        ret.append(arr[i])
-        i = i + 1
-    while j < len(brr):
-        ret.append(brr[j])
-        j = j + 1
+    # exhaust any remaining elements
+    if i < len(arr): ret.extend(arr[i:])
+    if j < len(brr): ret.extend(brr[j:])
 
     return ret
 
@@ -84,7 +79,7 @@ print(kmergesort([[1, 4, 7], [2, 5, 8, 10, 10], [3, 6, 9], [], [1, 5, 67]]))
 
 def kmergesort2(arrays):
     class ThisHeap(Heap):
-        """Array with minimum value at root"""
+        """Index of array with minimum value at root"""
         @classmethod
         def order(cls, arr, parent, child):
             """parent <= child in min heap"""

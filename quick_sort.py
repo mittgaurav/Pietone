@@ -97,18 +97,64 @@ def quicksort2(arr):
     return quicksort2(arr[:L+1]) + quicksort2(arr[L+1:])
 
 
+def partition3(arr):
+    """first, find the location of pivot
+    by counting elements smaller than it.
+    Then swap less and more items in the
+    left and right sides with each other.
+    """
+    pivot = arr[0]
+    loc = 0
+    for i in range(1, len(arr)):
+        if arr[i] < pivot: loc += 1
+    arr[0] = arr[loc]
+    arr[loc] = pivot
+
+    # Now, swap big/small in left/right
+    i, j = 0, len(arr) - 1
+    while i != j:
+        if arr[i] > pivot:
+            arr[i], arr[j] = arr[j], arr[i]
+            i += 1
+        else: j -= 1
+    print(pivot, arr, loc)
+    return loc
+
+
+def quicksort3(arr):
+    """there is another way"""
+    if not arr or len(arr) <= 1:
+        return arr
+    if len(arr) == 2:
+        if arr[0] > arr[1]: arr[0], arr[1] = arr[1], arr[0]
+        return arr
+
+    L = partition3(arr)
+
+    return quicksort2(arr[:L]) + [arr[L]] + quicksort2(arr[L+1:])
+    # return arr
+
+
+
 if __name__ == "__main__":
     print(quicksort([]))
     print(quicksort2([]))
+    print(quicksort3([]))
     print(quicksort([3, 2, 1, 4, 2, -6]))
     print(quicksort2([3, 2, 1, 4, 2, -6]))
+    print(quicksort3([3, 2, 1, 4, 2, -6]))
     print(quicksort([0, 10, 2, 23, 5, -8, 1, 12]))
     print(quicksort2([0, 10, 2, 23, 5, -8, 1, 12]))
+    print(quicksort3([0, 10, 2, 23, 5, -8, 1, 12]))
     print(quicksort([0]))
     print(quicksort2([0]))
+    print(quicksort3([0]))
     print(quicksort([0, 0, 0, 0]))
     print(quicksort2([0, 0, 0, 0]))
+    print(quicksort3([0, 0, 0, 0]))
     print(quicksort([-8, 0, 1, 2, 5, 10, 12, 23]))
     print(quicksort2([-8, 0, 1, 2, 5, 10, 12, 23]))
+    print(quicksort3([-8, 0, 1, 2, 5, 10, 12, 23]))
     print(quicksort([23, 12, 10, 5, 2, 1, 0, -8]))
     print(quicksort2([23, 12, 10, 5, 2, 1, 0, -8]))
+    print(quicksort3([23, 12, 10, 5, 2, 1, 0, -8]))
