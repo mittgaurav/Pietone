@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Tue Feb 26 00:04:30 2019
-
-@author: gaurav
-"""
 
 
 def overlapping_area_of_rects(rect1, rect2):
@@ -90,8 +85,8 @@ print(find_ints_with_sum([1, 2, 3, 4, 5, 6, 1, 4, 6, 9], 2))
 
 
 def two_sum(arr, k):
-    """find two elements that
-    are closest to a num k"""
+    """find two elements with
+    sum closest to a num k"""
     if not arr:
         return -1
 
@@ -360,3 +355,49 @@ print(longest_non_repeating('bbbbbb'))
 print(longest_non_repeating('abcdefgbbag'))
 print(longest_non_repeating(''))
 print(longest_non_repeating('abcbcbb'))
+
+
+def longest_at_most_two_distinct_chars(s):
+    """Find the length of the longest substring
+    that has at most two distinct characters"""
+    if not s: return 0
+    if len(s) <= 2: return len(s)
+
+    max_len = 0
+    this_char = 0
+    this_char_begin = 0
+    prev_char = 0
+    prev_char_begin = 0
+
+    for i in range(len(s)):
+        if s[i] not in (this_char, prev_char):
+            prev_char, this_char = this_char, s[i]
+            prev_char_begin, this_char_begin = this_char_begin, i
+        max_len = max(i - min(prev_char_begin, this_char_begin) + 1, max_len)
+
+    return max_len
+
+
+def longest_at_most_two_distinct_chars2(s):
+    """Find the length of the longest substring
+    that has at most two distinct characters"""
+    if not s: return 0
+    if len(s) <= 2: return len(s)
+
+    max_len = 0
+    this_char_begin = 0
+    prev_char_begin = 0
+
+    for i in range(len(s)):
+        if s[i] not in (s[this_char_begin], s[prev_char_begin]):
+            prev_char_begin, this_char_begin = this_char_begin, i
+        max_len = max(i - min(prev_char_begin, this_char_begin) + 1, max_len)
+
+    return max_len
+
+
+print("====", longest_at_most_two_distinct_chars.__name__)
+print(longest_at_most_two_distinct_chars2("abaac"))
+print(longest_at_most_two_distinct_chars2("aaabbbbcccccdeeeeeeeeeeeeff"))
+print(longest_at_most_two_distinct_chars2("eceba"))
+print(longest_at_most_two_distinct_chars2("aaaaaaaa"))
