@@ -46,7 +46,11 @@ def longest_palin_dp(arr, i, j) -> 'int':
 
 print(longest_palin_seq.__name__)
 for A in ["abdbca", "cddpd"]:
-    matrix = [[-1 for _ in A] for _ in A]
+    matrix = []
+    for i in range(len(A)):
+        matrix.append([])
+        for j in range(len(A)):
+            matrix[i].append(-1)
     print(A, longest_palin_seq(A), longest_palin_dp(A, 0, len(A)-1))
 print("--------------------")
 
@@ -118,3 +122,34 @@ print(longest_paren("()("))
 print(longest_paren("("))
 print(longest_paren(")()())"))
 print(longest_paren(")())())"))
+
+
+def count_sub_palindromes(s):
+    if not s: return 0
+    if len(s) == 1: return 1
+
+    matrix = []
+    for i in range(len(s)):
+        matrix.append([])
+        for j in range(len(s)):
+            matrix[i].append(-1)
+
+    def is_palin(s, i, j):
+        if j <= i: return True
+        if matrix[i][j] == -1:
+            matrix[i][j] = s[i] == s[j] and is_palin(s, i+1, j-1)
+        return matrix[i][j]
+
+    result = 0
+    for i in range(len(s)):
+        for j in range(i, len(s)):
+            if is_palin(s, i, j):
+                result += 1
+
+    return result
+
+
+print(count_sub_palindromes.__name__)
+print(count_sub_palindromes("abc"))
+print(count_sub_palindromes("aaaaaaaaaaaaaaaaaaaaaaaaaa"))
+print(count_sub_palindromes("thishannahsir"))
