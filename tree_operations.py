@@ -340,6 +340,19 @@ if __name__ == "__main__":
 # ==================================
 
 
+def path_with_sum(tree, val):
+    from collections import deque
+    q = deque()
+    q.append([tree, val])
+    while q:
+        node, val_this = q.popleft()
+        val_this -= node.data
+        if val_this == 0: return True
+        if node.left: q.append([node.left, val_this])
+        if node.right: q.append([node.right, val_this])
+    return False
+
+
 def has_path_from_root_with_sum(tree, val):
     """whether tree has a path
     which sums to given val.
@@ -357,11 +370,13 @@ if __name__ == "__main__":
     print(has_path_from_root_with_sum.__name__)
     T = Tree.tree()
     print(T)
-    print(10, has_path_from_root_with_sum(T, 10))
-    print(13, has_path_from_root_with_sum(T, 13))
-    print(7, has_path_from_root_with_sum(T, 7))
-    print(9, has_path_from_root_with_sum(T, 9))
-    print(5, has_path_from_root_with_sum(T, 5))
+    print(10, path_with_sum(T, 10), has_path_from_root_with_sum(T, 10))
+    print(13, path_with_sum(T, 13), has_path_from_root_with_sum(T, 13))
+    print(20, path_with_sum(T, 20), has_path_from_root_with_sum(T, 20))
+    print(21, path_with_sum(T, 21), has_path_from_root_with_sum(T, 21))
+    print(7, path_with_sum(T, 7), has_path_from_root_with_sum(T, 7))
+    print(9, path_with_sum(T, 9), has_path_from_root_with_sum(T, 9))
+    print(5, path_with_sum(T, 5), has_path_from_root_with_sum(T, 5))
     print("=======================")
 
 

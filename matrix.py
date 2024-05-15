@@ -80,3 +80,33 @@ matrix = [
          [7, 8, 9],
          ]
 print(greatest_product(matrix, 2, 2))
+
+
+def ordered_points(points):
+    import math
+
+    def angle(x, p):
+        # return angle in radian
+        at = math.atan2(x[1]-p[1], x[0]-p[0])
+        # if negative atan, then
+        # 2*pi to make it to +ve
+        return at if at >= 0 else math.tau + at
+
+    if len(points) < 3: return 0
+    for i in range(len(points)):
+        p = points[i]
+        rem = sorted(points[i+1:], key=lambda x: angle(x, p))
+        print(p, rem)
+
+
+print(ordered_points.__name__)
+points = [(0, 0), (0, 1), (1, 0), (-4, 4), (-3, -2)]
+ordered_points(points)
+
+
+def num_triangles_no_point_inside(points):
+    """for given list of points in 2-D plane
+    return number of triangles possible with
+    three points such that no other point is
+    inside or on the edge of the triangle"""
+    pass
