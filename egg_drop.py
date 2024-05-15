@@ -6,7 +6,7 @@ Created on Sun Feb 10 13:18:16 2019
 
 ef 0 1 2 3 4 5 6 7 8 9 10
 0  0 0 0 0 0 0 0 0 0 0 0
-1  0 1 1 1 1 1 1 1 1 1 1
+1  0 1 2 3 4 5 6 7 8 9 10
 2  0 1 2 2
 """
 
@@ -28,7 +28,7 @@ def egg_floor(floor, egg):
         # -egg doesn't break at i
         # so check with the above
         # floors with same eggs.
-        # Max of above cases will
+        # Max of these cases will
         # be upperlimit on num of
         # trials for floor i. For
         # every floor, minimizing
@@ -43,12 +43,10 @@ def egg_floor_dp(floor, egg):
     """dynamic programming"""
     matrix = [[0 for _ in range(floor+1)] for _ in range(egg+1)]
 
-    for j in range(1, floor+1):
-        matrix[1][j] = j
-
-    for i in range(1, egg+1):
-        matrix[i][1] = 1
-        matrix[i][0] = 0
+    # one egg is tried linearly for each floor
+    for j in range(1, floor+1): matrix[1][j] = j
+    # one floor is tried only once for any #egg
+    for i in range(1, egg+1): matrix[i][1] = 1
 
     for i in range(2, egg+1):
         for j in range(2, floor+1):
