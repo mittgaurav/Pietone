@@ -111,7 +111,7 @@ def longest_non_repeating_str(string):
         if string[i] not in last_loc:
             # not seen this char so update last
             # loc and take begin from previous
-            begin.append(0 if i is 0 else begin[i-1])
+            begin.append(0 if i == 0 else begin[i-1])
         else:
             # update last_loc. begin is
             # max of next from last_loc
@@ -135,3 +135,34 @@ print("===", longest_non_repeating_str.__name__, "===")
 print(longest_non_repeating_str("abcded"))
 print(longest_non_repeating_str("abcdedefgnhxzabc"))
 print(longest_non_repeating_str("abcdedefgnhabc"))
+
+
+def remove_negative_values(array):
+    """remove the min negative values such
+    that running sum is never negative."""
+    if not array: return 0
+
+    def fn(agg, i):
+        if i == len(array): return 0
+        if agg + array[i] < 0:
+            # the value makes the sum negative
+            # so must remove it no matter what
+            return 1 + fn(agg, i+1)
+        elif array[i] < 0:
+            # the value is negative but doesn't
+            # make sum negative. So check if we
+            # reduce removals by either keeping
+            # or removing it.
+            return min(1 + fn(agg, i+1), fn(agg + array[i], i+1))
+        else: return fn(agg + array[i], i+1)
+
+    return fn(0, 0)
+
+
+print('====', remove_negative_values.__name__)
+print(remove_negative_values([10, -10, -1, -1, -1, 10]))
+print(remove_negative_values([10, -1, -1, -1, 10]))
+print(remove_negative_values([10, -5, -5, -5, 20]))
+print(remove_negative_values([10, -11, 10]))
+print(remove_negative_values([10, -10, -10, -10, 100]))
+print(remove_negative_values([10, -5, -5, 20]))
