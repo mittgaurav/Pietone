@@ -111,8 +111,9 @@ class TwoLayerNN:
             # Backward pass: Update weights
             self.backward(X_train, y_pred, y_train)
 
+            loss = self.rms(y_pred, y_train)
             if epoch % 100 == 0 or epoch == epochs - 1:
-                print(f'Epoch {epoch}, Loss: {self.rms(y_pred, y_train):.4f}')
+                print(f'Epoch {epoch}, Loss: {loss:.4f}')
 
     def predict(self, X):
         # Make predictions on new data
@@ -135,10 +136,76 @@ class TwoLayerNN:
         return np.where(x > 0, 1, 0)
 
 
+class CustomLayerNN:
+    def __init__(self, layer_sizes, learning_rate=0.01):
+        self.layer_sizes = layer_sizes
+        self.num_layers = len(layer_sizes)
+        self.learning_rate = learning_rate
+
+        self.W = [np.random.randn(layer_sizes[i-1], layer_sizes[i]) for i in range(1, self.num_layers)]
+        self.b = [np.random.randn(1, layer_sizes[i]) for i in range(1, self.num_layers)]
+
+    def forward(self, X):
+        activations = [X]
+        for i in range(self.num_layers - 1):
+            z = np.dot(activations[-1], self.W[i]) + self.b[i]
+            a = z if i == self.num_layers - 2 else self.relu(z)
+            activations.append(a)
+        return activations
+
+    def backward(self, X, activations, y_true):
+        dE = self.rms_deriv(activations[-1], y_true)
+
+        dW = [np.dot(activations[-2].T, dE)]
+        db = [np.sum(dE, axis=0, keepdims=True)]
+
+        dA = [np.dot(dE, self.W[-1].T)]
+        dZ = [dA[0] * self.relu_deriv(activations[-2])]
+
+        for i in range(1, self.num_layers - 1):
+            dW.insert(0, np.dot(activations[-i-2].T, dZ[0]))
+            db.insert(0, np.sum(dZ[0], axis=0, keepdims=True))
+            dA.insert(0, np.dot(dZ[0], self.W[-i-1].T))
+            dZ.insert(0, dA[0] * self.relu_deriv(activations[-i-2]))
+
+        # dW.insert(0, np.dot(X.T, dZ[0]))
+        # db.insert(0, np.sum(dZ[0], axis=0, keepdims=True))
+
+        for i in range(self.num_layers - 1):
+            self.W[i] -= self.learning_rate * dW[i]
+            self.b[i] -= self.learning_rate * db[i]
+
+    def train(self, X_train, y_train, epochs):
+        for epoch in range(epochs):
+            activations = self.forward(X_train)
+            self.backward(X_train, activations, y_train)
+
+            loss = self.rms(activations[-1], y_train)
+            if epoch % 100 == 0 or epoch == epochs - 1:
+                # print(activations[-1].shape, activations[-1].max(), activations[-1].min())
+                print(f'Epoch {epoch}, Loss: {loss:.4f}')
+
+    def predict(self, X):
+        return self.forward(X)[-1]
+
+    def rms(self, y_pred, y_true):
+        return np.mean((y_pred - y_true) ** 2)
+
+    def rms_deriv(self, y_pred, y_true):
+        # rms error deriv
+        return 2 * (y_pred - y_true) / len(y_pred)
+
+    def relu(self, x):
+        return np.maximum(0, x)
+
+    def relu_deriv(self, x):
+        return np.where(x > 0, 1, 0)
+
+
 # Generate some synthetic data for training
-X_train = np.random.rand(10000, 2)  # 10000 samples, 2 features
+X_train = np.random.rand(100, 2)  # 10000 samples, 2 features
 y_train = 2*X_train[:, 0] + X_train[:, 1]  # True function: 2*x1 + x2
-y_train += np.random.rand(10000) / 10  # up to 10% noise in sample
+y_train += np.random.rand(100) / 10  # up to 10% noise in sample
 
 # training data
 X_test = np.array([[0.5, 0.2], [0.3, 0.7]])  # Test inputs
@@ -148,6 +215,7 @@ input_size = 2
 output_size = 1
 
 # Create and train the neural network
+print("===================")
 print("==== One layer ====")
 nn = OneLayerNN(input_size, output_size, learning_rate=.1)
 nn.train(X_train, y_train.reshape(-1, 1), epochs=1000)
@@ -156,12 +224,21 @@ nn.train(X_train, y_train.reshape(-1, 1), epochs=1000)
 y_pred = nn.predict(X_test)  # Predicted outputs
 print('expected', y_exp, 'result', y_pred.flatten())
 
-# Create and train the neural network
+print("===================")
 print("==== Two layer ====")
 hidden_size = 3
 nn = TwoLayerNN(input_size, hidden_size, output_size, learning_rate=.1)
 nn.train(X_train, y_train.reshape(-1, 1), epochs=1000)
 
-# Test the trained network
-y_pred = nn.predict(X_test)  # Predicted outputs
+y_pred = nn.predict(X_test)
+print('expected', y_exp, 'result', y_pred.flatten())
+
+print("===================")
+print("==== Few layer ====")
+hidden_sizes = [input_size, 3, 3, output_size]
+
+nn = CustomLayerNN(hidden_sizes, learning_rate=.1)
+nn.train(X_train, y_train.reshape(-1, 1), epochs=1000)
+
+y_pred = nn.predict(X_test)
 print('expected', y_exp, 'result', y_pred.flatten())
