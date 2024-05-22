@@ -359,3 +359,43 @@ print(kclosest_elems([2, 4, 5, 6, 9], 6, 3))
 print(kclosest_elems([2, 4, 5, 6, 9], 5.5, 3))
 print(kclosest_elems([2, 4, 5, 6, 9], 10, 3))
 print(kclosest_elems([2, 4, 5, 6, 9], 0, 3))
+
+
+def get_rank_1_on_1_fight(array):
+    """
+    Given array of comparative skills of different
+    players, return the level till they go if they
+    had a knock out match with adjacent players"""
+    if not array: return array
+
+    result = [0 for _ in array]
+
+    level = 0
+    indices = [i for i in range(len(array))]
+
+    while indices:
+        level += 1
+        if len(indices) == 1:
+            result[indices[0]] = level
+            break
+
+        new_indices = []
+        for i in range(0, len(indices), 2):
+            if i+1 >= len(indices):
+                new_indices.append(indices[i])
+                break
+
+            if array[indices[i]] < array[indices[i+1]]:
+                new_indices.append(indices[i+1])
+                result[indices[i]] = level
+            else:
+                new_indices.append(indices[i])
+                result[indices[i+1]] = level
+
+        indices = new_indices
+
+    return result
+
+
+print("====", get_rank_1_on_1_fight.__name__)
+print([3, 4, 2, 1, 7, 8], get_rank_1_on_1_fight([3, 4, 2, 1, 7, 8]))
