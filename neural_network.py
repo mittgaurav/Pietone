@@ -33,8 +33,8 @@ class OneLayerNN:
         self.learning_rate = learning_rate
 
         # Initialize weights and biases for the network
-        self.W = np.random.randn(input_size, output_size)  # Weight matrix
-        self.b = np.zeros((1, output_size))                # Bias vector
+        self.W = np.random.randn(input_size, output_size) # Weight matrix
+        self.b = np.zeros((1, output_size))               # Bias vector
 
     def forward(self, X):
         """Forward propagation through the network"""
@@ -60,7 +60,7 @@ class OneLayerNN:
             # Backward pass: Update weights
             self.backward(X_train, y_pred, y_train)
 
-            if epoch % 100 == 0 or epoch == epochs - 1:
+            if epoch % (epochs // 10) == 0 or epoch == epochs - 1:
                 print(f'Epoch {epoch}, Loss: {rms(y_pred, y_train):.4f}')
 
     def predict(self, X):
@@ -76,10 +76,11 @@ class TwoLayerNN:
         self.learning_rate = learning_rate
 
         # Initialize weights and biases for the network
-        self.W1 = np.random.randn(input_size, layer_size)  # Weight matrix (1st)
-        self.b1 = np.zeros((1, layer_size))                # Bias vector (1st)
-        self.W2 = np.random.randn(layer_size, output_size) # Weight matrix (2nd)
-        self.b2 = np.zeros((1, output_size))               # Bias vector (2nd)
+        # He initialization
+        self.W1 = np.random.randn(input_size, layer_size) * np.sqrt(2. / input_size)  # Weight matrix (1st)
+        self.b1 = np.zeros((1, layer_size))  # Bias vector (1st)
+        self.W2 = np.random.randn(layer_size, output_size) * np.sqrt(2. / layer_size) # Weight matrix (2nd)
+        self.b2 = np.zeros((1, output_size))  # Bias vector (2nd)
 
     def forward(self, X):
         """Forward propagation through the network"""
@@ -128,7 +129,7 @@ class TwoLayerNN:
             A1, Z1, y_pred = self.forward(X_train)
             self.backward(X_train, A1, Z1, y_pred, y_train)
 
-            if epoch % 100 == 0 or epoch == epochs - 1:
+            if epoch % (epochs // 10) == 0 or epoch == epochs - 1:
                 print(f'Epoch {epoch}, Loss: {rms(y_pred, y_train):.4f}')
 
     def predict(self, X):
@@ -143,7 +144,7 @@ class CustomLayerNN:
         self.learning_rate = learning_rate
 
         layers = [input_size] + layer_sizes + [output_size]
-        self.W = [np.random.randn(layers[i], layers[i + 1]) for i in range(len(layers) - 1)]
+        self.W = [np.random.randn(layers[i], layers[i + 1]) * np.sqrt(2. / layers[i]) for i in range(len(layers) - 1)]
         self.b = [np.zeros((1, layers[i + 1])) for i in range(len(layers) - 1)]
 
     def forward(self, X):
@@ -152,7 +153,7 @@ class CustomLayerNN:
         the last layer returns the final result"""
         A = X
         activations = [A]
-        zctivations = [A]
+        zctivations = []
         for i in range(self.num_layers):
             Z = np.dot(A, self.W[i]) + self.b[i]
             A = Z if i == self.num_layers - 1 else relu(Z)
@@ -173,7 +174,7 @@ class CustomLayerNN:
             db.insert(0, np.sum(dZ, axis=0, keepdims=True))
             if i > 0:
                 dA = np.dot(dZ, self.W[i].T)
-                dZ = dA * relu_deriv(zctivations[i])
+                dZ = dA * relu_deriv(zctivations[i - 1])
 
         for i in range(self.num_layers):
             self.W[i] -= self.learning_rate * dW[i]
@@ -185,7 +186,7 @@ class CustomLayerNN:
             activations, zctivations = self.forward(X_train)
             self.backward(activations, zctivations, y_train)
 
-            if epoch % 100 == 0 or epoch == epochs - 1:
+            if epoch % (epochs // 10) == 0 or epoch == epochs - 1:
                 print(f'Epoch {epoch}, Loss: {rms(activations[-1], y_train):.4f}')
 
     def predict(self, X):
@@ -228,13 +229,14 @@ def test():
 
     print("===================")
     print("=== Few layers ====")
-    layer_sizes = [10, 10, 10]
+    layer_sizes_sizes = [[100, 100], [10, 10, 10, 10, 10, 10]]
 
-    nn = CustomLayerNN(input_size, layer_sizes, output_size, learning_rate=0.01)
-    nn.train(X_train, y_train, epochs=2000)
+    for layer_sizes in layer_sizes_sizes:
+        nn = CustomLayerNN(input_size, layer_sizes, output_size, learning_rate=0.01)
+        nn.train(X_train, y_train, epochs=2000)
 
-    y_pred = nn.predict(X_test)
-    print('Expected:', y_exp, 'Result:', y_pred.flatten())
+        y_pred = nn.predict(X_test)
+        print('Expected:', y_exp, 'Result:', y_pred.flatten())
 
 if __name__ == "__main__":
     test()
