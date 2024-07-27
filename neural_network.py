@@ -52,6 +52,8 @@ class OneLayerNN:
         self.W -= self.learning_rate * dW
         self.b -= self.learning_rate * db
 
+        return dW, db
+
     def train(self, X_train, y_train, epochs):
         """Train network using forward and backward prop"""
         for epoch in range(epochs):
@@ -123,6 +125,8 @@ class TwoLayerNN:
         self.W2 -= self.learning_rate * dW2
         self.b2 -= self.learning_rate * db2
 
+        return dW1, db1
+
     def train(self, X_train, y_train, epochs):
         """Train network using forward and backward prop"""
         for epoch in range(epochs):
@@ -179,6 +183,8 @@ class CustomLayerNN:
         for i in range(self.num_layers):
             self.W[i] -= self.learning_rate * dW[i]
             self.b[i] -= self.learning_rate * db[i]
+
+        return dW[0], db[0]
 
     def train(self, X_train, y_train, epochs):
         """Train network using forward and backward prop"""
