@@ -203,12 +203,12 @@ class CustomLayerNN:
 def test():
     """Generate one, two, and n layer neural network"""
     # Generate some synthetic data for training
-    X_train = np.random.rand(100, 2)  # 100 samples, 2 features
+    X_train = np.random.rand(100, 2)               # 100 samples & 2 features
     y_train = 2 * X_train[:, :1] + X_train[:, 1:]  # True function: 2*x1 + x2
-    y_train += np.random.rand(100, 1) / 20  # up to 5% noise in sample
+    y_train += np.random.rand(100, 1) / 20         # up to 5% noise in sample
 
     # prediction data
-    X_test = np.array([[0.5, 0.2], [0.3, 0.7]])  # Test inputs
+    X_test = np.array([[0.5, 0.2], [0.3, 0.7]])    # Test inputs
     y_exp = 2 * X_test[:, 0] + X_test[:, 1]
 
     input_size = 2
