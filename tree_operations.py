@@ -477,3 +477,47 @@ if __name__ == "__main__":
     T = Tree(0, Tree(1, Tree(3)), Tree(1, None, Tree(0)))
     print(T)
     print(move_coins(T))
+    print("=======================")
+
+
+def right_view(tree):
+    """Someone is looking from the right side
+    show them right-most nodes they will see.
+    This can easily be converted to left view
+    """
+    result = ""
+    if not tree:
+        return result
+
+    queue = []
+    use_next = True  # root toh hamesha upar dikhega
+
+    queue.append(tree)
+    while queue:
+        size = len(queue)
+        while size:
+            size -= 1
+            node = queue.pop(0)
+            if use_next:
+                result += str(node.data)
+                use_next = False
+
+            if node.right:
+                queue.append(node.right)
+            if node.left:
+                queue.append(node.left)
+        # iss level ka last element toh chala gaya
+        # Agla element next level ka right-most hoga
+        use_next = True
+        print(queue, result, node.data)
+
+
+    return result
+
+if __name__ == "__main__":
+    print(right_view.__name__)
+    T = Tree(1, Tree(2, Tree(4), Tree(5, None, Tree(8))),
+             Tree(3, Tree(6, Tree(9), Tree(0)), Tree(7, None, Tree(1))))
+    print(T)
+    print(right_view(T))
+    print("=======================")
