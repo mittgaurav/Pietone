@@ -182,7 +182,7 @@ print("===========================")
 # ==================================
 
 
-def zigzap_level_order(root: 'TreeNode') -> 'List[List[int]]':
+def zigzap_level_order(root):
     """left, right, left, right..."""
     result = []
     queue = [root]
