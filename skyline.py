@@ -87,8 +87,50 @@ def rain_water(arr):
     return sum(res)
 
 
+def rain_water_2(arr):
+    """One iteration but two pointers"""
+    n = len(arr)
+    res = [99999] * n
+
+    pre = 0
+    post = 0
+    for i in range(len(arr)):  # same logic as array problems all ]product but i
+        res[i] = min(res[i], max(0, pre - arr[i]))
+        pre = max(pre, arr[i])
+        res[n - i - 1] = min(res[n - i - 1], max(0, post - arr[n - i - 1]))
+        post = max(post, arr[n - i - 1])
+
+    return sum(res)
+
+
+def rain_water_3(arr):
+    """left or right mein kam wala decide karta hai kitna
+    paani hoga. toh dekho kaun sa hoga and then usko ek step
+    aage bhadhado"""
+    left = 0
+    right = len(arr) - 1
+    res = 0
+
+    max_l = 0
+    max_r = 0
+    while left < right:
+        max_l = max(max_l, arr[left])
+        max_r = max(max_r, arr[right])
+        if max_l < max_r:
+            # left is smaller. so it will decide how much water
+            res += max_l - arr[left]
+            # agli left position par check karo
+            left += 1
+        else:
+            res += max_r - arr[right]
+            right -= 1
+    return res
+
+
 print("====", rain_water.__name__)
 print(rain_water([0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]))
+print(rain_water_2([0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]))
+print(rain_water_3([0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]))
 
 
 def merge_intervals(intervals):
@@ -235,3 +277,30 @@ print("====", total_time.__name__)
 print(total_time([[10, 20], [15, 25]]))
 print(total_time([[10, 20], [22, 25]]))
 print(total_time([[10, 20], [1, 25]]))
+
+
+def largest_rectangle_histogram(arr):
+    """find rectangle with largest size in histogram using stack"""
+    # ek heights and length tuple ka stack banao such that
+    # it tells me how far back can i go with this height
+    # Phir apun log isko use karenge rectangle ke size mein
+    stack = []
+    max_rect = 0
+    for i in arr:
+        print(i, stack, end=" ")
+        length = 1
+        while stack and i <= stack[-1][0]:
+            prev_h, prev_l = stack.pop()
+            length += prev_l
+        if stack:
+            max_rect = max(max_rect, stack[-1][0] * (stack[-1][1] + length))
+        stack.append((i, length))
+        max_rect = max(max_rect, i * length)
+        print(length, i * length, max_rect)
+
+    return max_rect
+
+
+print("====", largest_rectangle_histogram.__name__)
+print(largest_rectangle_histogram([2, 1, 5, 6, 2, 3]))
+print(largest_rectangle_histogram([2, 1, 5, 6, 2, 3, 2, 3]))
