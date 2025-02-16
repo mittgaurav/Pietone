@@ -153,3 +153,62 @@ print(longest_parentheses_2('(()'))
 print(longest_parentheses_2(')()())((())((())))'))
 print(longest_parentheses_2('((()()()()(((())'))
 print(longest_parentheses_2(')())()))'))
+
+
+def valid_combinations_count(total):
+    """Given total number of pairs, find valid combinations"""
+    # 1 - ()
+    # 2 - ()() (())
+    # 3 - ()()() ()(()) (())() ((())) (()())
+    def func(opened, closed):
+        if opened == total and closed == total:
+            return 1
+        count = 0
+        count += func(opened+1, closed) if opened < total else 0
+        count += func(opened, closed+1) if closed < opened else 0
+
+        return count
+    return func(0, 0)
+
+
+def valid_combinations(total):
+    def func(opened, closed, string):
+        if opened == total and closed == total:
+            return [string]
+        strings = []
+        strings.extend(func(opened+1, closed, string + "(") if opened < total else [])
+        strings.extend(func(opened, closed+1, string + ")") if closed < opened else [])
+
+        return strings
+    return func(0, 0, "")
+
+
+print("====", valid_combinations.__name__)
+for i in range(5):
+    print(i, valid_combinations_count(i), valid_combinations(i))
+
+
+def warmer_temperature(arr):
+    """Find the first day that is warmer than today
+    temperature for every day in the given array"""
+    # this algo works as if we see a really warm day,
+    # all previous less warmer days will be fulfilled
+    # The stack is always sorted from max to low temp
+    result = [-1] * len(arr)
+
+    # Purane jyada garam din for which
+    # we haven't yet found warmer days
+    # Add first day as the first value
+    stack = [0]
+    for i in range(1, len(arr)):
+        while stack and arr[i] > arr[stack[-1]]:
+            # Purane warmer days ke liye check karo
+            result[stack.pop()] = arr[i]
+        # add today to the list like we added first element
+        stack.append(i)
+    return result
+
+
+print("====", warmer_temperature.__name__)
+print([50, 52, 51, 61, 70, 72, 69], "\n", warmer_temperature([50, 52, 51, 61, 70, 72, 69]))
+print([73, 74, 75, 71, 69, 72, 76, 73], "\n", warmer_temperature([73, 74, 75, 71, 69, 72, 76, 73]))
