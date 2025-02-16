@@ -18,7 +18,7 @@ class ListNode:
 
 
 class Solution:
-    def reverseList(self, head: ListNode) -> ListNode:
+    def reverseList(head: ListNode) -> ListNode:
         if not head:
             return None
 
@@ -37,25 +37,24 @@ class Solution:
 
         return ret
 
-    def reverseList2(self, l):
+    def reverseList2(l):
         # 1 -> 10 -> 20 -> 30 -> 40 -> 0
         if not l or not l.next:
             return l
 
         # take the first element
         # and reverse the rest of it
-        remaining = self.reverseList2(l.next)
+        remaining = Solution.reverseList2(l.next)
 
         l.next.next = l
         l.next = None
         return remaining
 
-    def reverseList3(self, head):
+    def reverseList3(head):
         if not head or not head.next:
             return head
 
         prev = None
-        temp = None
         while head:
             temp = head.next
             head.next = prev
@@ -64,7 +63,7 @@ class Solution:
 
         return prev
 
-    def removeNthFromEnd(self, head: ListNode, m: int) -> ListNode:
+    def removeNthFromEnd(head: ListNode, m: int) -> ListNode:
         """Two pointers - first pointer takes
         till mth, so we can start the second,
         which actually takes us to location"""
@@ -130,13 +129,15 @@ def delete_node(list, n):
 if __name__ == "__main__":
     print("====", Solution().reverseList.__name__)
     L = ListNode(1, ListNode(2, ListNode(5, None)))  # 1 -> 2 -> 5
-    print(L)
-    L = Solution().reverseList2(L)
-    print(L)
-    L = ListNode(1, ListNode(10, ListNode(12, L)))
+    print("original", L)
+    print("first", Solution.reverseList2(L))
+    L = ListNode(1, ListNode(2, ListNode(5, None)))  # 1 -> 2 -> 5
+    print("second", Solution.reverseList3(L))
+    L = ListNode(1, ListNode(10, ListNode(12, None
+                                          )))
     L = ListNode(1, ListNode(52, ListNode(57, L)))
     print(L)
-    print(Solution().reverseList2(L))
+    print(Solution.reverseList2(L))
     L = None
     L = ListNode(1, ListNode(2, ListNode(10, ListNode(15, None))))
 
