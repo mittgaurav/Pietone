@@ -1,21 +1,40 @@
 import numpy as np
 from neural_network import OneLayerNN
 
-def scaled_dot_product_attention(Q, K, V, mask=None):
+
+def softmax(x):
+    """softmax function"""
+    e_x = np.exp(x - np.max(x, axis=-1, keepdims=True))
+    return e_x / e_x.sum(axis=-1, keepdims=True)
+
+def layer_norm(x, eps=1e-6):
+    """Apply layer normalization to stabilize training"""
+    mean = np.mean(x, axis=-1, keepdims=True)
+    std = np.std(x, axis=-1, keepdims=True)
+    return (x - mean) / (std + eps)
+
+def positional_encoding(seq_len, d_model):
+    pos = np.arange(seq_len)[:, np.newaxis]
+    i = np.arange(d_model)[np.newaxis, :]
+    angle_rates = 1 / np.power(10000, (2 * (i // 2)) / np.float32(d_model))
+    angle_rads = pos * angle_rates
+    angle_rads[:, 0::2] = np.sin(angle_rads[:, 0::2])
+    angle_rads[:, 1::2] = np.cos(angle_rads[:, 1::2])
+    return angle_rads
+
+def scaled_dot_product_attention(q, k, v, mask=None):
     """Compute scaled dot-product attention
     Optional mask to apply to the scores"""
-    d_k = Q.shape[-1]
-    scores = np.matmul(Q, K.transpose(0, 1, 3, 2))
-    scores /= np.sqrt(d_k)
+    matmul_qk = np.matmul(q, k.transpose((0, 1, 3, 2)))
+    dk = k.shape[-1]
+    scaled_attention_logits = matmul_qk / np.sqrt(dk)
 
     if mask is not None:
-        scores += mask
+        scaled_attention_logits += (mask * -1e9)
 
-    weights = np.exp(scores - np.max(scores, axis=-1, keepdims=True))
-    weights /= np.sum(weights, axis=-1, keepdims=True)
-
-    output = np.matmul(weights, V)
-    return output
+    attention_weights = softmax(scaled_attention_logits)
+    output = np.matmul(attention_weights, v)
+    return output, attention_weights
 
 def scaled_dot_product_attention_backward(d_output, Q, K, V):
     """Backward pass for scaled dot-product attention."""
@@ -36,24 +55,19 @@ def scaled_dot_product_attention_backward(d_output, Q, K, V):
 
     return dQ, dK, dV
 
-def layer_normalization(x, epsilon=1e-6):
-    """Apply layer normalization to stabilize training."""
-    mean = np.mean(x, axis=-1, keepdims=True)
-    variance = np.var(x, axis=-1, keepdims=True)
-    normalized = (x - mean) / np.sqrt(variance + epsilon)
-    return normalized
-
+def create_padding_mask(seq):
+    return (seq == 0).astype(np.float32)[:, np.newaxis, np.newaxis, :]
 
 class MultiHeadAttention:
     """Multi-Head Attention mechanism.
     Allows the model to attend to different parts of the input
     sequence simultaneously by using multiple attention heads,
-    each focusing on a different aspects of the sequence"""
-    def __init__(self, d_model, num_heads):
+    each focusing on a different aspect of the sequence"""
+    def __init__(self, d_model, num_heads, learning_rate=0.01):
         self.d_model = d_model             # Dimensionality of model embeddings
         self.num_heads = num_heads         # Number of parallel attention heads
         self.depth = d_model // num_heads  # Depth of each attention head
-
+        self.learning_rate = learning_rate
         # Initialize weight for queries, keys, values, and output projection
         self.Wq = np.random.randn(d_model, d_model) * np.sqrt(2.0 / d_model)
         self.Wk = np.random.randn(d_model, d_model) * np.sqrt(2.0 / d_model)
@@ -70,8 +84,7 @@ class MultiHeadAttention:
         """Forward pass multi-head attention
         Q: Query matrix, current input's vector to focus on
         K: Key matrix, entire sequence's to match the query
-        V: Value matrix, sequence values containing context
-        """
+        V: Value matrix, sequence values containing context"""
         Q = np.matmul(Q, self.Wq)
         K = np.matmul(K, self.Wk)
         V = np.matmul(V, self.Wv)
@@ -80,11 +93,10 @@ class MultiHeadAttention:
         K = self.split_heads(K)
         V = self.split_heads(V)
 
-        attention_output = scaled_dot_product_attention(Q, K, V)
+        attention_output, _ = scaled_dot_product_attention(Q, K, V)
         attention_output = np.transpose(attention_output, (0, 2, 1, 3)).reshape(attention_output.shape[0], -1, self.d_model)
         output = np.matmul(attention_output, self.Wo)
         return output
-
 
     def backward(self, d_output):
         """Compute gradients for multi-head attention."""
@@ -101,157 +113,224 @@ class MultiHeadAttention:
         dK = np.matmul(dK, self.Wk.T)
         dV = np.matmul(dV, self.Wv.T)
 
-        self.Wo -= learning_rate * np.matmul(self.output.T, d_output)
-        self.Wq -= learning_rate * np.matmul(self.Q.T, dQ)
-        self.Wk -= learning_rate * np.matmul(self.K.T, dK)
-        self.Wv -= learning_rate * np.matmul(self.V.T, dV)
+        self.Wo -= self.learning_rate * np.matmul(self.output.T, d_output)
+        self.Wq -= self.learning_rate * np.matmul(self.Q.T, dQ)
+        self.Wk -= self.learning_rate * np.matmul(self.K.T, dK)
+        self.Wv -= self.learning_rate * np.matmul(self.V.T, dV)
 
         return dQ, dK, dV
 
+class Dropout:
+    def __init__(self, rate):
+        self.rate = rate
+        self.mask = None
 
-class Transformer:
-    """Transformer model with multi-head attention and feed-forward network"""
-    def __init__(self, d_model, num_heads, num_layers, d_ff, max_len=1000, learning_rate=0.01):
-        self.d_model = d_model             # Dimensionality of the model
-        self.num_heads = num_heads         # Number of attention heads
-        self.num_layers = num_layers       # Number of transformer layers
-        self.d_ff = d_model                # Feed-forward network dimension
+    def forward(self, X, training=True):
+        if not training:
+            return X
+        self.mask = np.random.rand(*X.shape) > self.rate
+        return X * self.mask / (1.0 - self.rate)
+
+    def backward(self, d_output):
+        return d_output * self.mask / (1.0 - self.rate)
+
+class EncoderLayer:
+    def __init__(self, d_model, num_heads, d_ff, learning_rate=0.01):
+        self.d_model = d_model
+        self.num_heads = num_heads
+        self.d_ff = d_ff
         self.learning_rate = learning_rate
-        self.positional_encodings = self.get_positional_encoding(max_len, d_model)
-        self.layers = [self.build_layer() for _ in range(num_layers)]
 
-    def get_positional_encoding(self, max_len, d_model):
-        """Generate positional encodings."""
-        position = np.arange(max_len)[:, np.newaxis]
-        div_term = np.exp(np.arange(0, d_model, 2) * -(np.log(10000.0) / d_model))
-        pe = np.zeros((max_len, d_model))
-        pe[:, 0::2] = np.sin(position * div_term)
-        pe[:, 1::2] = np.cos(position * div_term)
-        return pe
-
-    def build_layer(self):
-        """Build a single Transformer layer."""
-        return {
-            'attention': MultiHeadAttention(self.d_model, self.num_heads),
-            'feed_forward': OneLayerNN(self.d_model, self.d_model)
-        }
+        self.attention = MultiHeadAttention(d_model, num_heads, learning_rate)
+        self.ffn = OneLayerNN(d_model, d_ff, learning_rate)
+        self.dropout = Dropout(0.1)  # Adding dropout
 
     def forward(self, x):
-        """Forward pass through the Transformer model."""
+        attn_output = self.attention.forward(x, x, x)
+        attn_output = layer_norm(x + attn_output)
+        attn_output = self.dropout.forward(attn_output)
+
+        ffn_output = self.ffn.forward(attn_output)
+        output = layer_norm(attn_output + ffn_output)
+        output = self.dropout.forward(output)
+        return output, attn_output, ffn_output
+
+    def backward(self, d_output, attn_output, ffn_output):
+        d_ffn_output = self.ffn.backward(ffn_output, d_output)
+        d_attn_output, dQ, dK, dV = self.attention.backward(d_ffn_output)
+        return d_attn_output
+
+class DecoderLayer:
+    def __init__(self, d_model, num_heads, d_ff, learning_rate=0.01):
+        self.d_model = d_model
+        self.num_heads = num_heads
+        self.d_ff = d_ff
+        self.learning_rate = learning_rate
+
+        self.self_attention = MultiHeadAttention(d_model, num_heads, learning_rate)
+        self.enc_dec_attention = MultiHeadAttention(d_model, num_heads, learning_rate)
+        self.ffn = OneLayerNN(d_model, d_ff, learning_rate)
+        self.dropout = Dropout(0.1)  # Adding dropout
+
+    def forward(self, x, enc_output):
+        self_attn_output = self.self_attention.forward(x, x, x)
+        self_attn_output = layer_norm(x + self_attn_output)
+        self_attn_output = self.dropout.forward(self_attn_output)
+
+        enc_dec_attn_output = self.enc_dec_attention.forward(self_attn_output, enc_output, enc_output)
+        enc_dec_attn_output = layer_norm(self_attn_output + enc_dec_attn_output)
+        enc_dec_attn_output = self.dropout.forward(enc_dec_attn_output)
+
+        ffn_output = self.ffn.forward(enc_dec_attn_output)
+        output = layer_norm(enc_dec_attn_output + ffn_output)
+        output = self.dropout.forward(output)
+        return output, self_attn_output, enc_dec_attn_output, ffn_output
+
+    def backward(self, d_output, self_attn_output, enc_dec_attn_output, ffn_output):
+        d_ffn_output = self.ffn.backward(ffn_output, d_output)
+        d_enc_dec_attn_output, dQ, dK, dV = self.enc_dec_attention.backward(d_ffn_output)
+        d_self_attn_output, dQ, dK, dV = self.self_attention.backward(d_enc_dec_attn_output)
+        return d_self_attn_output
+
+class Encoder:
+    """Encoder consisting of multiple EncoderLayers"""
+    def __init__(self, num_layers, d_model, num_heads, d_ff, vocab_size, max_len, learning_rate=0.01):
+        self.num_layers = num_layers
+        self.d_model = d_model
+        self.num_heads = num_heads
+        self.d_ff = d_ff
+        self.learning_rate = learning_rate
+
+        self.embedding = OneLayerNN(vocab_size, d_model, learning_rate)
+        self.pos_encoding = positional_encoding(max_len, d_model)
+        self.layers = [EncoderLayer(d_model, num_heads, d_ff, learning_rate) for _ in range(num_layers)]
+        self.dropout = Dropout(0.1)
+
+    def forward(self, x):
         seq_len = x.shape[1]
-        x = x.astype(float)
-        x += self.positional_encodings[:seq_len]  # Add positional encoding
-
-        activations = []
+        x = self.embedding.forward(x) + self.pos_encoding[:seq_len]
+        x = self.dropout.forward(x)
+        attentions, ffn_outputs = [], []
         for layer in self.layers:
-            # Multi-head attention
-            # We want to see how each word relates to every word
-            # Thus we provide the input sequence for Q, K, and V
-            attention_output = layer['attention'].forward(x, x, x)
-            x = layer_normalization(x + attention_output)  # Add & Norm
-            activations.append(x.copy())
+            x, attn_output, ffn_output = layer.forward(x)
+            attentions.append(attn_output)
+            ffn_outputs.append(ffn_output)
+        return x, attentions, ffn_outputs
 
-            # Feed-forward network
-            ff_output = layer['feed_forward'].forward(x)
-            x = layer_normalization(x + ff_output)  # Add & Norm
-
-        return x, activations
-
-    def backward(self, X, y_true, y_pred, activations):
-        """Backward pass through the Transformer model."""
-        # Backward pass through each layer
+    def backward(self, d_output, attentions, ffn_outputs):
         for i in reversed(range(self.num_layers)):
-            layer = self.layers[i]
-            # Backward pass for feed-forward network
-            dW, _ = layer['feed_forward'].backward(activations[i], y_pred, y_true)
+            d_output = self.layers[i].backward(d_output, attentions[i], ffn_outputs[i])
+        return d_output
 
-            # Backward pass for multi-head attention
-            return layer['attention'].backward(dW)
+class Decoder:
+    """Decoder consisting of multiple DecoderLayers"""
+    def __init__(self, num_layers, d_model, num_heads, d_ff, vocab_size, max_len, learning_rate=0.01):
+        self.num_layers = num_layers
+        self.d_model = d_model
+        self.num_heads = num_heads
+        self.d_ff = d_ff
+        self.learning_rate = learning_rate
+
+        self.embedding = OneLayerNN(vocab_size, d_model, learning_rate)
+        self.pos_encoding = positional_encoding(max_len, d_model)
+        self.layers = [DecoderLayer(d_model, num_heads, d_ff, learning_rate) for _ in range(num_layers)]
+        self.dropout = Dropout(0.1)
+
+    def forward(self, x, enc_output):
+        seq_len = x.shape[1]
+        x = self.embedding.forward(x) + self.pos_encoding[:seq_len]
+        x = self.dropout.forward(x)
+        self_attentions, enc_dec_attentions, ffn_outputs = [], [], []
+        for layer in self.layers:
+            x, self_attn_output, enc_dec_attn_output, ffn_output = layer.forward(x, enc_output)
+            self_attentions.append(self_attn_output)
+            enc_dec_attentions.append(enc_dec_attn_output)
+            ffn_outputs.append(ffn_output)
+        return x, self_attentions, enc_dec_attentions, ffn_outputs
+
+    def backward(self, d_output, self_attentions, enc_dec_attentions, ffn_outputs):
+        for i in reversed(range(self.num_layers)):
+            d_output = self.layers[i].backward(d_output, self_attentions[i], enc_dec_attentions[i], ffn_outputs[i])
+        return d_output
+
+class Transformer:
+    """Transformer model containing Encoder and Decoder"""
+    def __init__(self, enc_vocab_size, dec_vocab_size, num_layers, d_model, num_heads, d_ff, max_len, learning_rate=0.01):
+        self.encoder = Encoder(num_layers, d_model, num_heads, d_ff, enc_vocab_size, max_len, learning_rate)
+        self.decoder = Decoder(num_layers, d_model, num_heads, d_ff, dec_vocab_size, max_len, learning_rate)
+        self.final_layer = OneLayerNN(d_model, dec_vocab_size, learning_rate)
+
+    def forward(self, enc_inp, dec_inp):
+        enc_output, enc_attns, enc_ffns = self.encoder.forward(enc_inp)
+        dec_output, dec_self_attns, dec_enc_dec_attns, dec_ffns = self.decoder.forward(dec_inp, enc_output)
+        final_output = self.final_layer.forward(dec_output)
+        return final_output, enc_output, dec_output, enc_attns, enc_ffns, dec_self_attns, dec_enc_dec_attns, dec_ffns
+
+    def backward(self, d_final_output, y_true, y_pred, enc_output, dec_output, enc_attns, enc_ffns, dec_self_attns, dec_enc_dec_attns, dec_ffns):
+        d_dec_output = self.final_layer.backward(d_final_output.T, y_pred, y_true)
+        d_enc_output = self.decoder.backward(d_dec_output, dec_self_attns, dec_enc_dec_attns, dec_ffns)
+        self.encoder.backward(d_enc_output, enc_attns, enc_ffns)
 
     def train(self, X_train, y_train, epochs):
-        """Train network using forward and backward prop"""
         for epoch in range(epochs):
-            # Forward pass: Calculate predicted y
-            y_pred, activations = self.forward(X_train)
-            # Backward pass: Update weights
-            self.backward(X_train, y_pred, y_train, activations)
+            final_output, enc_output, dec_output, enc_attns, enc_ffns, dec_self_attns, dec_enc_dec_attns, dec_ffns = self.forward(X_train, y_train)
+            d_final_output = 2 * (final_output - y_train) / y_train.size  # Gradient of the MSE loss w.r.t. final output
+            self.backward(d_final_output, y_train, final_output, enc_output, dec_output, enc_attns, enc_ffns, dec_self_attns, dec_enc_dec_attns, dec_ffns)
 
             if epoch % (epochs // 10) == 0 or epoch == epochs - 1:
-                print(f'Epoch {epoch}, Loss: {np.mean((y_pred - y_train) ** 2):.4f}')
+                print(f'Epoch {epoch}, Loss: {np.mean((final_output - y_train) ** 2):.4f}')
 
+    def predict(self, X):
+        dec_input = np.zeros((X.shape[0], X.shape[1], self.final_layer.output_size))  # Initialize decoder input with zeros
+        final_output, _, _, _, _, _, _, _ = self.forward(X, dec_input)
+        return np.argmax(final_output, axis=-1)  # Return the predicted indices
 
-# Example data: simple phrases and their reversed versions
-phrases = ["hello world", "goodbye moon", "transformer model"]
-reversed_phrases = [phrase[::-1] for phrase in phrases]
+def one_hot_encode(sequence, vocab_size):
+    return np.eye(vocab_size)[sequence]
 
-def tokenize(phrases):
-    words = set(word for phrase in phrases for word in phrase.split())
-    word_to_index = {word: i + 1 for i, word in enumerate(words)}
-    index_to_word = {i: word for word, i in word_to_index.items()}
-    return word_to_index, index_to_word
+def string_to_indices(s, char_to_index):
+    return np.array([char_to_index[char] for char in s])
 
-def to_numpy_arrays(phrases, reversed_phrases, word_to_index, max_len):
-    X = np.zeros((len(phrases), max_len), dtype=int)
-    y = np.zeros((len(reversed_phrases), max_len), dtype=int)
+def indices_to_string(indices, index_to_char):
+    return ''.join([index_to_char[index] for index in indices])
 
-    for i, phrase in enumerate(phrases):
-        seq = [word_to_index.get(word, 0) for word in phrase.split()]
-        X[i, :len(seq)] = seq
+# Example strings
+input_strings = ["hello", "world", "abcde"]
+target_strings = [s[::-1] for s in input_strings]  # reverse word using tf
 
-    for i, reversed_phrase in enumerate(reversed_phrases):
-        seq = [word_to_index.get(word, 0) for word in reversed_phrase.split()]
-        y[i, :len(seq)] = seq
+# Character to index mapping
+chars = sorted(set(''.join(input_strings)))
+char_to_index = {char: idx for idx, char in enumerate(chars)}
+index_to_char = {idx: char for char, idx in char_to_index.items()}
+vocab_size = len(chars)
 
-    return X, y
+# Prepare data
+X_train = np.array([string_to_indices(s, char_to_index) for s in input_strings])
+y_train = np.array([string_to_indices(s, char_to_index) for s in target_strings])
 
-# Initialize tokenizers
-word_to_index, index_to_word = tokenize(phrases)
+# One-hot encode the input and target sequences
+X_train = one_hot_encode(X_train, vocab_size)
+y_train = one_hot_encode(y_train, vocab_size)
 
-# Define maximum length of sequences
-max_len = max(max(len(p.split()) for p in phrases), max(len(p.split()) for p in reversed_phrases))
-
-# Convert to numpy arrays
-X_train, y_train = to_numpy_arrays(phrases, reversed_phrases, word_to_index, max_len)
-
-
-# Define hyperparameters
-d_model = 512
-num_heads = 8
+# Transformer hyperparameters
 num_layers = 2
-d_ff = 512
+d_model = 64
+num_heads = 8
+d_ff = 64
+max_len = max(len(s) for s in input_strings)
 learning_rate = 0.01
-epochs = 20
+epochs = 1000
 
-# Initialize Transformer model
-transformer = Transformer(d_model=d_model, num_heads=num_heads, num_layers=num_layers, d_ff=d_ff, max_len=max_len)
+# Initialize and train transformer
+transformer = Transformer(vocab_size, vocab_size, num_layers, d_model, num_heads, d_ff, max_len, learning_rate)
+transformer.train(X_train, y_train, epochs)
 
-# Training the model
-transformer.train(X_train, y_train, epochs=epochs)
+# Predict
+test_strings = ["hello", "world", "abcde"]
+X_test = np.array([string_to_indices(s, char_to_index) for s in test_strings])
+X_test = one_hot_encode(X_test, vocab_size)
+predictions = transformer.predict(X_test)
 
-def reverse_phrase(phrase):
-    """Reverse a phrase using the trained Transformer model."""
-    # Tokenize and pad the input phrase
-    sequence = [word_to_index.get(word, 0) for word in phrase.split()]  # Use 0 for unknown words
-    sequence_padded = np.zeros((1, max_len), dtype=int)
-    sequence_padded[0, :len(sequence)] = sequence
-
-    # Perform forward pass
-    output = transformer.forward(sequence_padded)[0]
-
-    # Convert model output to indices
-    reversed_indices = np.argmax(output, axis=-1)[0]
-
-    # Convert indices to words
-    reversed_words = [index_to_word.get(idx, '') for idx in reversed_indices if idx != 0]
-
-    return ' '.join(reversed_words).strip()
-
-# Test the model
-test_phrases = ["hello world", "goodbye moon", "transformer model"]
-
-# Display results
-for test_phrase in test_phrases:
-    reversed_output = reverse_phrase(test_phrase)
-    print(f"Original: {test_phrase}")
-    print(f"Reversed: {reversed_output}")
-    print()
+# Convert predictions back to strings
+predicted_strings = [indices_to_string(pred, index_to_char) for pred in predictions]
+print(predicted_strings)  # Should print reversed strings
