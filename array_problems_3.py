@@ -153,3 +153,24 @@ test_cases = [
 for s, t, exp in test_cases:
     res = min_window_with_all_chars(s, t)
     assert res == exp, f"{s}, {t}, {exp}, {res}"
+
+
+def car_fleets(position, speed, target):
+    """Given cars at given positions and speed going towards a target.
+    Find out how many cars groups will form reaching the target if the
+    faster cars can't overtake a slower car and they become a fleet"""
+    prev_time = 0
+    count = 0
+    for i in range(len(position) - 1, -1, -1):
+        time = speed[i] * (target - position[i])
+        if time > prev_time:
+            # this car takes more time than the ones closer
+            # to target, so will not get stuck behind them
+            count += 1
+            prev_time = time
+
+    return count
+
+
+print("====", car_fleets.__name__)
+print(car_fleets([0, 3, 5, 8, 10], [1, 3, 1, 4, 2], 12))

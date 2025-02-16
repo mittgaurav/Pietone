@@ -399,3 +399,70 @@ def get_rank_1_on_1_fight(array):
 
 print("====", get_rank_1_on_1_fight.__name__)
 print([3, 4, 2, 1, 7, 8], get_rank_1_on_1_fight([3, 4, 2, 1, 7, 8]))
+
+
+def repeating_char_length_with_k_replacement(string, k):
+    """find the maximum possible length of repeating characters if
+    we can replace any character with a particular char k times"""
+    chars = set([c for c in string])
+    length = 0
+
+    for char in chars:
+        # for each character, dekho kitna maximum ja sakte hain
+        # by replacing from first location till the end//./
+        kk = k
+        locs_of_char = []
+        starting_k = 0
+
+        for i in range(len(string)):
+            if string[i] == char:
+                locs_of_char.append(i)
+            else:
+                if kk > 0:
+                    kk -= 1  # ek k is consumed iss char ko replace karne mein
+                else:  # k nahi bache, sabse pehla k ko yahan daalo
+                    while locs_of_char and starting_k == locs_of_char[0]:
+                        starting_k += 1
+                        locs_of_char.pop(0)
+                    starting_k += 1
+            length = max(length, i - starting_k + 1)
+            # print(kk, char, "_" + string[starting_k:i+1] + "_", length)
+
+    return length
+
+
+print("====", repeating_char_length_with_k_replacement.__name__)
+print(repeating_char_length_with_k_replacement("abbad", 2))
+print(repeating_char_length_with_k_replacement("pxyxqaxyxbxcx", 2))
+
+
+
+def min_win_substring(string, sub):
+    """INCORRECT"""
+    """find the shortest window of a string that fulfills a substring"""
+    from collections import defaultdict
+    subs = defaultdict(int)
+    for c in sub:
+        subs[c] += 1
+
+    this = defaultdict(int)
+    left = 0
+    right = 0
+    for i in range(len(string)):
+        c = string[i]
+        if c in subs:
+            # agar sabse aage hai toh hatao as we can replace with this one
+            if string[left] == c and this[c] >= subs[c]:
+                this[c] -= 1
+                while string[left] not in subs:
+                    left += 1
+            this[c] += 1
+
+
+
+
+
+
+
+
+

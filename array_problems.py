@@ -283,6 +283,28 @@ print(get_products_of_all_except_index([8, 2, 4, 3, 1, 5]))
 print(get_products_of_all_except_index([-7, -1, -4, -2]))
 
 
+def get_products_of_all_except_index_2(int_list):
+    """two pointers. Pehle start se yahan tak and
+    then end se wahan tak ko update karo"""
+    n = len(int_list)
+    product = [1] * n
+
+    pre = 1
+    post = 1
+    for i in range(n):
+        product[i] *= pre
+        pre *= int_list[i]
+        product[n -i - 1] *= post
+        post *= int_list[n - i - 1]
+
+    return product
+
+
+print("====", get_products_of_all_except_index.__name__)
+print(get_products_of_all_except_index_2([8, 2, 4, 3, 1, 5]))
+print(get_products_of_all_except_index_2([-7, -1, -4, -2]))
+
+
 def pair_sum_equal_k(arr, k, i=0, j=9999):
     """in sorted list find whether
     any pair wise sum equal k"""
@@ -401,3 +423,45 @@ print(longest_at_most_two_distinct_chars2("abaac"))
 print(longest_at_most_two_distinct_chars2("aaabbbbcccccdeeeeeeeeeeeeff"))
 print(longest_at_most_two_distinct_chars2("eceba"))
 print(longest_at_most_two_distinct_chars2("aaaaaaaa"))
+
+
+def longest_continuous_seq_in_array(arr):
+    """
+    Given an array find the longest continuous
+    sequence whether they are together or not.
+    """
+    from collections import defaultdict
+    # get map of value and next, if available
+    nxt = {i: None for i in arr}
+    for i in arr:
+        if i + 1 in nxt:
+            nxt[i] = i + 1
+
+    visited = set()
+    count = defaultdict(int)
+
+    for k in nxt.keys():
+        if k not in visited:
+            visited.add(k)
+            x = k
+            while nxt[x]:
+                count[k] += 1
+                x = nxt[x]
+
+    max_i = -1
+    max_c = 0
+    for i, c in count.items():
+        if c > max_c:
+            max_i = i
+    if not max_i:
+        return None
+    result = [max_i]
+    while nxt[max_i]:
+        result.append(nxt[max_i])
+        max_i = nxt[max_i]
+
+    return result
+
+
+print("=====", longest_continuous_seq_in_array.__name__)
+print(longest_continuous_seq_in_array([2, 4, 7, 3, 5, 1, 4, 9]))
