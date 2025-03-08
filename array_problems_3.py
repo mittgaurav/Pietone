@@ -211,8 +211,33 @@ def magic_nums(matrix):
 
     return result
 
-print(magic_nums([[3, 7, 8], [9, 11, 13], [15, 16, 17]]))
-print(magic_nums([[1,10,4,2],[9,3,8,7],[15,16,17,12]]))
+
+def magic_nums2(matrix):
+    """another way to do the same thing"""
+    result = []
+    if not matrix or not matrix[0]: return result
+
+    for i in matrix:
+        minn = 9999999999999
+        this = -1
+        for j, val in enumerate(i):
+            if val < minn:
+                minn = val
+                this = j
+
+        for j in range(len(matrix)):
+            val = matrix[j][this]
+            maxx = -9999999999999
+            if val > maxx:
+                maxx = val
+        if minn == maxx:
+            result.append(minn)
+    return result
+
+
+for fn in (magic_nums, magic_nums2):
+    print(fn([[3, 7, 8], [9, 11, 13], [15, 16, 17]]))
+    print(fn([[1,10,4,2],[9,3,8,7],[15,16,17,12]]))
 
 
 def magic_locs(matrix):
@@ -253,5 +278,28 @@ def magic_locs(matrix):
     return result
 
 
-print(magic_locs([[1, 0, 0], [0, 0, 1], [1, 0, 0]]))
-print(magic_locs([[1, 0, 0], [0, 1, 0], [0, 0, 1]]))
+def magic_locs2(matrix):
+    """another way to do the same thing"""
+    result = []
+    if not matrix or not matrix[0]: return result
+
+    rows = [0] * len(matrix)
+    cols = [0] * len(matrix[0])
+
+    for i in range(len(matrix)):
+        for j in range(len(matrix[i])):
+            if matrix[i][j] == 1:
+                rows[i] += 1
+                cols[j] += 1
+
+    for i in range(len(matrix)):
+        for j in range(len(matrix[i])):
+            if matrix[i][j] == 1 and rows[i] == 1 and cols[j] == 1:
+                result.append((i,j))
+
+    return result
+
+
+for fn in (magic_locs, magic_locs2):
+    print(fn([[1, 0, 0], [0, 0, 1], [1, 0, 0]]))
+    print(fn([[1, 0, 0], [0, 1, 0], [0, 0, 1]]))
