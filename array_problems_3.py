@@ -174,3 +174,84 @@ def car_fleets(position, speed, target):
 
 print("====", car_fleets.__name__)
 print(car_fleets([0, 3, 5, 8, 10], [1, 3, 1, 4, 2], 12))
+
+
+def magic_nums(matrix):
+    """find that are minimum in the
+    row and maximum in the column"""
+    mins = []
+    maxs = []
+    result = []
+
+    if not matrix or not matrix[0]:
+        return result
+
+    # find index of minimum numbers for each row
+    for i in matrix:
+        m = 9999999999999999999
+        for j, k in enumerate(i):
+            if k < m:
+                this = j
+                m = k
+        mins.append(this)
+
+    # find index of maximum numbers for each col
+    for i in range(len(matrix[0])):
+        m = -99999999999999999
+        for j in range(len(matrix)):
+            if matrix[j][i] > m:
+                this = j
+                m = matrix[j][i]
+        maxs.append(this)
+
+    for i in range(len(matrix)):
+        for j in range(len(matrix[i])):
+            if mins[i] == j and maxs[j] == i:
+                result.append(matrix[i][j])
+
+    return result
+
+print(magic_nums([[3, 7, 8], [9, 11, 13], [15, 16, 17]]))
+print(magic_nums([[1,10,4,2],[9,3,8,7],[15,16,17,12]]))
+
+
+def magic_locs(matrix):
+    """find elements that are 1 and all
+    the others in row and col are 0"""
+    rows = []
+    cols = []
+
+    result = []
+
+    if not matrix or not matrix[0]: return result
+
+    for i in matrix:
+        this = -1
+        count_1 = 0
+        count_0 = 0
+        for j, k in enumerate(i):
+            if k == 1:
+                this = j
+                count_1 += 1
+            if k == 0:
+                count_0 += 1
+        if count_0 == len(i) - 1 and count_1 == 1:
+            # this is the 1 column, check if this val
+            # is the only 1 in the column across rows
+            count_1 = 0
+            count_0 = 0
+            that = -1
+            for i in range(len(matrix)):
+                if matrix[i][this] == 0:
+                    count_0 += 1
+                if matrix[i][this] == 1:
+                    count_1 += 1
+                    that = i
+            if count_0 == len(matrix) - 1 and count_1 == 1:
+                result.append((that, this))
+
+    return result
+
+
+print(magic_locs([[1, 0, 0], [0, 0, 1], [1, 0, 0]]))
+print(magic_locs([[1, 0, 0], [0, 1, 0], [0, 0, 1]]))
