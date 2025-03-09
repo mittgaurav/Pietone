@@ -438,31 +438,45 @@ print(repeating_char_length_with_k_replacement("pxyxqaxyxbxcx", 2))
 
 
 def min_win_substring(string, sub):
-    """INCORRECT"""
     """find the shortest window of a string that fulfills a substring"""
-    from collections import defaultdict
-    subs = defaultdict(int)
-    for c in sub:
-        subs[c] += 1
+    from collections import Counter, defaultdict
 
-    this = defaultdict(int)
-    left = 0
-    right = 0
-    for i in range(len(string)):
-        c = string[i]
-        if c in subs:
-            # agar sabse aage hai toh hatao as we can replace with this one
-            if string[left] == c and this[c] >= subs[c]:
-                this[c] -= 1
-                while string[left] not in subs:
-                    left += 1
-            this[c] += 1
+    minl = len(string) + 1
+    mins = ""
+
+    # required freq of each char
+    required = Counter(sub)
+    seen = defaultdict(int)
+
+    def fulfilled(ss):
+        # Check if accumulated string fulfills required
+        for c, count in required.items():
+            if ss[c] < count:
+                return False
+        return True
+
+    l, r = 0, 0
+    while r < len(string):
+        char = string[r]
+
+        if char in required:
+            seen[char] += 1
+
+        while fulfilled(seen):
+            if r - l + 1 < minl:
+                minl = r - l + 1
+                mins = string[l:r+1]
+            rem_char = string[l]
+            if rem_char in required:
+                seen[rem_char] -= 1
+            l += 1
+
+        r += 1
+
+    return mins
 
 
-
-
-
-
-
-
-
+print("====", min_win_substring.__name__)
+print(min_win_substring("ADOBECODEBANC", "ABC"))
+print(min_win_substring("ADOBECODEBANC", "ABCL"))
+print(min_win_substring("ADOBECODEBANC", "ABCD"))
