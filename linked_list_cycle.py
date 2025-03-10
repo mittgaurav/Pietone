@@ -155,9 +155,11 @@ def even_odd(node):
         i += 1
         node = node.next
 
+    eveend.next = None  # empty out this in case it points to the last odd
     oddend.next = eve.next
 
     return odd.next
 
 print("====", even_odd.__name__)
 print(even_odd(L(1, L(2, L(3, L(4, L(5, L(6, L(7, L(8, L(9, L(10))))))))))))
+print(even_odd(L(1, L(2, L(3, L(4, L(5, L(6, L(7, L(8, L(9, L(10, L(11)))))))))))))
