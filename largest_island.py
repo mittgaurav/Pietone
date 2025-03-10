@@ -175,7 +175,7 @@ def paths(i, j, n):
     return f1()
 
 
-print(paths.__name__)
+print("====", paths.__name__)
 print(2, paths(0, 0, 2))
 print(3, paths(0, 0, 3))
 print(7, paths(0, 0, 7))
@@ -219,8 +219,70 @@ def path_all_direction(i, j, n):
     return res
 
 
-print(path_all_direction.__name__)
+print("====", path_all_direction.__name__)
 N = 4
 scores = [[-1 for _ in range(N)] for _ in range(N)]
 visited = [[False for _ in range(N)] for _ in range(N)]
 print(path_all_direction(0, 0, N))
+
+
+def largest_square(matrix):
+    if not matrix or not matrix[0]: return None
+
+    largest_sqr = [[0 for _ in matrix[0]] for __ in matrix]
+    largest_row = [[0 for _ in matrix[0]] for __ in matrix]
+    largest_col = [[0 for _ in matrix[0]] for __ in matrix]
+
+    for i in range(len(matrix)):
+        for j in range(len(matrix[i])):
+            if matrix[i][j] == 0:
+                continue
+            largest_row[i][j] = 1 + (largest_row[i][j-1] if j > 0 else 0)
+            largest_col[i][j] = 1 + (largest_col[i-1][j] if i > 0 else 0)
+            prev_sq = largest_sqr[i-1][j-1] if i > 0 and j > 0 else 0
+            largest_sqr[i][j] = min(1 + prev_sq, largest_row[i][j], largest_col[i][j])
+
+    return max([max(arr) for arr in largest_sqr])
+
+
+print("====", largest_square.__name__)
+area = [[0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
+        [1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0],
+        [1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0]]
+print(f"largest_square: {largest_square(area)}")
+area = [[0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
+        [1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0],
+        [1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0]]
+print(f"largest_square: {largest_square(area)}")
+area = [[0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
+        [1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0],
+        [1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0],
+        [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0],
+        [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0]]
+print(f"largest_square: {largest_square(area)}")
+area = [[0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
+        [1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0],
+        [1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+        [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0],
+        [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0],
+        [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0]]
+print(f"largest_square: {largest_square(area)}")
+area =  [[1, 0, 1, 1, 0, 0, 0],
+         [1, 0, 1, 0, 1, 0, 0],
+         [0, 1, 0, 0, 0, 1, 1]]
+print(f"largest_square: {largest_square(area)}")
