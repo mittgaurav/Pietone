@@ -131,5 +131,33 @@ def merge_sorted_list(i, j):
 
 i = L(1, L(3, L(7, L(15, L(18)))))
 j = L(2, L(8, L(9, L(10))))
-print(i, j)
-print(merge_sorted_list(i, j))
+print(i, "\n", j, "\nmerged:", merge_sorted_list(i, j))
+
+
+def even_odd(node):
+    """separate into even and odd linked lists"""
+    if not node: return node
+
+    odd = L()
+    eve = L()
+
+    oddend = odd
+    eveend = eve
+
+    i = 1
+    while node:
+        if i % 2 == 1:  #odd
+            oddend.next = node
+            oddend = oddend.next
+        else:
+            eveend.next = node
+            eveend = eveend.next
+        i += 1
+        node = node.next
+
+    oddend.next = eve.next
+
+    return odd.next
+
+print("====", even_odd.__name__)
+print(even_odd(L(1, L(2, L(3, L(4, L(5, L(6, L(7, L(8, L(9, L(10))))))))))))
