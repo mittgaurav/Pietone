@@ -482,3 +482,26 @@ tree = Bst(4, Bst(2, Bst(1), Bst(3)), Bst(6, Bst(5), Bst(7)))
 total = 0
 print(tree)
 print(num_of_paths(tree), total)
+
+
+def max_in_levels(tree):
+    from collections import deque
+    queue = deque()
+
+    result = []
+    queue.append(tree)
+    while queue:
+        size = len(queue)
+        result.append(max([q.data for q in queue]))
+        for _ in range(size):
+            this = queue.popleft()
+            if this.left:
+                queue.append(this.left)
+            if this.right:
+                queue.append(this.right)
+    return result
+
+
+print("====", max_in_levels.__name__)
+print(T, max_in_levels(T))
+print(tree, max_in_levels(tree))
