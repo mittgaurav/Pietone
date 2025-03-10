@@ -100,28 +100,68 @@ print("--------------------")
 
 def longest_paren(arr):
     """parenthesis match longest"""
-    # not working
-    if not arr:
-        return 0
+    # Push index of ( on stack and
+    # as and when we pop it, update
+    # the maximum valid length.
+    stack = []
+    maxl = 0
+    prev = -1
 
-    if len(arr) == 1:
-        return 0
-    if len(arr) == 2:
-        return 2 if arr[0] == '(' and arr[1] == ')' else 0
+    for i, c in enumerate(arr):
+        if c == '(':
+            if not stack and prev >= 0:
+                stack.append(prev)
+            else:
+                stack.append(i)
+        else:
+            if stack:
+                prev = stack.pop()
+                maxl = max(maxl, i - prev + 1)
+            else:
+                prev = -1
 
-    if arr[0] == '(' and arr[1] == ')':
-        return 2 + longest_paren(arr[1:-1])
-    elif arr[0] != '(':
-        return longest_paren(arr[1:])
-    elif arr[-1] != ')':
-        return longest_paren(arr[:-1])
+    return maxl
 
 
-print(longest_paren.__name__)
-print(longest_paren("()("))
-print(longest_paren("("))
-print(longest_paren(")()())"))
-print(longest_paren(")())())"))
+print("====", longest_paren.__name__)
+print("()(", longest_paren("()("))
+print("((()())", longest_paren("((()())"))
+print(")()())", longest_paren(")()())"))
+print(")())())", longest_paren(")())())"))
+print(")((())))())", longest_paren(")((())))())"))
+
+
+def remove_one_get_palin(s):
+    """Does the string become a valid palindrome
+    by removing one and only one character?"""
+    l, r = 0, len(s) - 1
+    removed = 0
+
+    while l < r and s[l] == s[r]:
+        l += 1
+        r -= 1
+
+    if l >= r:
+        return "already palindrome"
+
+    def is_palin(L, R):
+        while L < R:
+            if s[L] != s[R]:
+                return False
+            L += 1
+            R -= 1
+        return True
+
+    return is_palin(l+1, r) or is_palin(l, r-1)
+
+
+print("====", remove_one_get_palin.__name__)
+print("racecar", remove_one_get_palin("racecar"))
+print("raecar", remove_one_get_palin("raecar"))
+print("racecxyar", remove_one_get_palin("racecxyar"))
+print("raceca", remove_one_get_palin("raceca"))
+print("raccar", remove_one_get_palin("raccar"))
+print("racearr", remove_one_get_palin("racearr"))
 
 
 def count_sub_palindromes(s):
@@ -149,7 +189,7 @@ def count_sub_palindromes(s):
     return result
 
 
-print(count_sub_palindromes.__name__)
+print("====", count_sub_palindromes.__name__)
 print(count_sub_palindromes("abc"))
 print(count_sub_palindromes("aaaaaaaaaaaaaaaaaaaaaaaaaa"))
 print(count_sub_palindromes("thishannahsir"))
