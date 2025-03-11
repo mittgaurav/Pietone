@@ -105,6 +105,11 @@ def longest_paren(arr):
     # the maximum valid length.
     stack = []
     maxl = 0
+
+    # sometimes there may be a continuation
+    # of a valid parenthesis e.g. (()) ()
+    # pehle 4 is valid. then next two mein
+    # add the previous 4 ka starting point
     prev = -1
 
     for i, c in enumerate(arr):
@@ -118,6 +123,8 @@ def longest_paren(arr):
                 prev = stack.pop()
                 maxl = max(maxl, i - prev + 1)
             else:
+                # pichla invalid hai. so don't
+                # consider for the next valid
                 prev = -1
 
     return maxl
@@ -193,3 +200,41 @@ print("====", count_sub_palindromes.__name__)
 print(count_sub_palindromes("abc"))
 print(count_sub_palindromes("aaaaaaaaaaaaaaaaaaaaaaaaaa"))
 print(count_sub_palindromes("thishannahsir"))
+
+
+def max_valid_parenthesis(string):
+    """remove minimum number to get a valid parenthesis"""
+    opens = 0
+    to_remove = set()
+
+    # do two passes
+    # forward pass - remove the extra closing brackets
+    for i, c in enumerate(string):
+        if c == '(':
+            opens += 1
+        elif c == ')':
+            if opens > 0:
+                opens -= 1
+            else:
+                to_remove.add(i)
+
+    closes = 0
+    for i, c in enumerate(reversed(string)):
+        if c == ')':
+            closes += 1
+        elif c == '(':
+            if closes > 0:
+                closes -= 1
+            else:
+                to_remove.add(len(string) - i - 1)
+
+    result = ""
+    for i, c in enumerate(string):
+        if i not in to_remove:
+            result += c
+
+    return result
+
+
+print(max_valid_parenthesis("(()(())(("))
+print(max_valid_parenthesis("(()(a()b)(c("))
