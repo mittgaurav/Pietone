@@ -327,3 +327,92 @@ if __name__ == "__main__":
     print("=======================")
 # ==================================
 # ==================================
+
+
+def solve_word_straight(matrix, word):
+    """find if a word exists in a matrix"""
+    if not matrix or not matrix[0] or not word : return None
+
+    rows = len(matrix)
+    cols = len(matrix[0])
+    first = word[0]
+    sols = []
+    for i in range(rows):
+        for j in range(cols):
+            if matrix[i][j] == first:
+                found = True
+                for k in range(len(word)):
+                    if j + k >= cols or matrix[i][j+k] != word[k]:
+                        found = False
+                        break
+
+                if found:
+                    sols.append(matrix[i][j:j+k+1])
+                found = True
+                for k in range(len(word)):
+                    if i + k >= rows or matrix[i+k][j] != word[k]:
+                        found = False
+                        break
+
+                if found:
+                    sols.append(''.join([_[j] for _ in matrix[i:i+k+1]]))
+    return sols or f"{word} NOT FOUND"
+
+
+def solve_word_snakewise(matrix, word):
+    rows = len(matrix)
+    cols = len(matrix[0])
+    first = word[0]
+
+    visited = set()
+    def dfs(x, y, tosee):
+        if tosee == len(word):
+            return True
+        if (x, y) in visited:
+            return False
+        if x < 0 or x >= rows or y < 0 or y >= cols:
+            return False
+        if matrix[x][y] != word[tosee]:
+            return False
+
+        visited.add((x, y))
+        res = dfs(x+1, y, tosee+1) \
+            or dfs(x, y+1, tosee+1) \
+            or dfs(x-1, y, tosee+1) \
+            or dfs(x, y-1, tosee+1)
+        visited.remove((x, y))
+        return res
+
+
+    for i in range(rows):
+        for j in range(cols):
+            if matrix[i][j] == first:
+                visited = set()
+                tosee = 0
+                if dfs(i, j, tosee):
+                    return word, True
+
+    return word, False
+
+
+matrix = [
+"face",
+"book",
+"moot",
+"bake",
+]
+
+
+for solve_word in (solve_word_straight, solve_word_snakewise):
+    print(solve_word(matrix, "face"))
+    print(solve_word(matrix, "cook"))
+    print(solve_word(matrix, "boots"))
+    print(solve_word(matrix, "fate"))
+    print(solve_word(matrix, "booa"))
+    print(solve_word(matrix, "oo"))
+    print(solve_word(matrix, "boot"))
+    print(solve_word(matrix, "booot"))
+    print(solve_word(matrix, "boooot"))
+    print(solve_word(matrix, "booook"))
+    print(solve_word(matrix, "boooook"))
+    print(solve_word(matrix, "facoot"))

@@ -89,10 +89,6 @@ class Graph:
         """show using mathplot"""
         import matplotlib.pyplot as plt
         import networkx as nx
-        import warnings
-        import matplotlib.cbook as mpc
-        warnings.filterwarnings("ignore",
-                                category=mpc.mplDeprecation)
 
         # Replace with spring layout
         # which is clearly prettier,
@@ -109,7 +105,8 @@ class Graph:
         nx.draw_networkx_nodes(self, pos, node_size=700)
 
         # edges
-        nx.draw_networkx_edges(self, pos, arrowsize=25)
+        self._adj = self.adj_list
+        nx.draw_networkx_edges(self, pos, edgelist=self.edges(), arrows=True, arrowsize=25)
 
         # labels
         nx.draw_networkx_labels(self, pos, font_size=20)
