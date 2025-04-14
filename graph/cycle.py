@@ -1,15 +1,19 @@
-def dfs(node, graph, this_visited):
+def dfs(node, graph, this_visited, visited):
     if node in this_visited:
         return True
 
     this_visited.add(node)
 
     # cycle if any node is seen again in this component
-    return any(dfs(n, graph, this_visited) for n in graph[node])
+    cycle = any(dfs(n, graph, this_visited, visited) for n in graph[node])
+    this_visited.remove(node)
+    visited.add(node)
+    return cycle
 
 
 def detect_cycle(graph):
     visited = set()
+    this_visited = set()
 
     for node in graph.keys():
         if node in visited:
@@ -17,17 +21,17 @@ def detect_cycle(graph):
         visited.add(node)
 
         # this will be executed once for each connected component
-        this_visited = set()
-        if dfs(node, graph, this_visited):
+        if dfs(node, graph, this_visited, visited):
             return True
-
-        visited.update(this_visited)
 
     return False
 
 
 if __name__ == "__main__":
     test_cases = [
+        ({0:[1, 2], 1: [3], 2: [3], 3: []}, False),
+        ({0: [1, 2], 1: [3], 2: [1], 3: [2]}, True),
+
         # Test case 1: Simple Cycle
         ({0: [1], 1: [2], 2: [0]}, True),  # Expected: True (Cycle found)
 
