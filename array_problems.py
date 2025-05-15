@@ -369,14 +369,53 @@ def longest_non_repeating(s):
 
     return max_len
 
+def longest_non_repeat(s):
+    res = 0
+    seen = set()
+    l, r = 0, 0
+    while r < len(s):
+        if s[r] in seen:
+            while s[l] != s[r]:
+                seen.remove(s[l])
+                l += 1
+            l += 1
+        seen.add(s[r])
+        res = max(res, r - l + 1)
+        r += 1
+    return res
+
+
+def lswor(string):
+    if len(string) <= 1:
+        return len(string)
+
+    res = 0
+    l = 0
+    seen = set()
+
+    for r in range(len(string)):
+        while string[r] in seen:
+            # If the character at r is already in the set,
+            # move l forward and remove that character
+            seen.remove(string[l])
+            l += 1
+        # Add the character at r to the set
+        seen.add(string[r])
+        # Update the result with the maximum
+        # length of the substring
+        res = max(res, r - l + 1)
+
+    return res
+
 
 print("====", longest_non_repeating.__name__)
-print(longest_non_repeating('abcabcbb'))
-print(longest_non_repeating('pwwkew'))
-print(longest_non_repeating('bbbbbb'))
-print(longest_non_repeating('abcdefgbbag'))
-print(longest_non_repeating(''))
-print(longest_non_repeating('abcbcbb'))
+for fn in (longest_non_repeating, longest_non_repeat, lswor):
+    print(fn('abcabcbb'))
+    print(fn('pwwkew'))
+    print(fn('bbbbbb'))
+    print(fn('abcdefgbbag'))
+    print(fn(''))
+    print(fn('abcbcbb'))
 
 
 def longest_at_most_two_distinct_chars(s):

@@ -163,3 +163,40 @@ def even_odd(node):
 print("====", even_odd.__name__)
 print(even_odd(L(1, L(2, L(3, L(4, L(5, L(6, L(7, L(8, L(9, L(10))))))))))))
 print(even_odd(L(1, L(2, L(3, L(4, L(5, L(6, L(7, L(8, L(9, L(10, L(11)))))))))))))
+
+
+def find_minimas_maximas(node):
+    """find location of local maximas and local minimas"""
+    if not node: return None
+
+    i = 0
+    maximas = []
+    minimas = []
+    prev = node.val
+    node = node.next
+    while node and node.next:
+        i += 1
+        if node.val > prev and node.val > node.next.val:
+            maximas.append(i)
+        if node.val < prev and node.val < node.next.val:
+            minimas.append(i)
+        prev = node.val
+    return maximas, minimas
+
+
+def insertNodeAtPosition(llist, data, position):
+    # Write your code here
+    node = L(data)
+    if not position:
+        node.next = llist
+        return node
+
+    this = llist
+    while position and this:
+        this = this.next
+        position -= 1
+
+    node.next = this.next
+    this.next = node
+
+    return llist
